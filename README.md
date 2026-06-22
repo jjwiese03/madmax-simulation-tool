@@ -54,6 +54,6 @@ https://jjwiese03.github.io/Webinterface_MADMAX/index.html
 
 ## Branches
 
-The latest stable release is maintained in the `main` branch.
+The latest stable release is maintained and improved in the `main` branch.
 
-New features and improvements are developed in dedicated feature branches before being reviewed and merged into `main`.
+New features are developed in dedicated feature branches before being reviewed and merged into `main`.
