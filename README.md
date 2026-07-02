@@ -36,8 +36,7 @@ This simulation tool was developed as part of a bachelor’s thesis at RWTH Aach
 - [Branches](#branches)
 
 ## Quick Start
-
-To get started, either use the online version of the application or clone this repository and host the `index.html` file locally using your preferred web server.
+To get started, you can either use the online version of the application or clone this repository and serve the [`index.html`](/frontend/index.html) file located in the `/frontend` directory using your preferred local web server.
 
 **Online Version:**
 https://jjwiese03.github.io/Webinterface_MADMAX/AppWebVersion/index.html#
