@@ -62,7 +62,7 @@ discplot.discConfig.on("disc:selected", function (selection) {
 
 discplot.discConfig.on(["disc:removed", "disc:added"], function () {
     counter_field.value = String(this.discs.length);
-    
+
     updateBoostplot(this);
     discplot.draw();
 })

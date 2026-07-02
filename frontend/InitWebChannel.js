@@ -1,2 +1,0 @@
-var WEBCHANNEL_ENABLED = false;
-

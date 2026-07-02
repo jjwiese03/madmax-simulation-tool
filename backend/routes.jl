@@ -1,26 +1,20 @@
 module Routes
 
+import Genie: Genie, Router, WebChannels, Assets, Renderer.Json.JSONParser
 
-using Genie, Genie.Router, Genie.WebChannels, Genie.Assets, JSON
+Router.route("/") do
+    Genie.WebChannels.unsubscribe_disconnected_clients()
 
-path = joinpath(@__DIR__, "..", "frontend", "index.html")
-@info path
-@info isfile(path)
-
-route("/") do
-    @info joinpath(@__DIR__, "..", "frontend")
-
-    serve_static_file(
-        "index.html",
-        root = joinpath(@__DIR__, "..", "frontend")
-    )
+    html = read(joinpath(@__DIR__, "../frontend/index.html"), String)
+    Genie.Renderer.Html.html(replace(html, "</body>" => Assets.channels_support("compute") * "</body>"))
 end
 
-channel("/Test/echo") do
-    payload = params(:payload)
-    # @echo payload
+Router.channel("/compute/echo") do
+    socket = Router.params(:WS_CLIENT)
+    payload = Router.params(:payload)
+    @info "payload: $payload"
 
-    JSON.json()
+    WebChannels.message(socket, "test")
 end
 
 end
