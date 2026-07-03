@@ -54,8 +54,12 @@ export class Disc {
     delete(){
         this.collection.deleteDisc(this);
     }
-    selectDisc(deselect = true){
-        this.collection.selectDisc(this, deselect);
+    selectDisc(deselectOthers = true){
+        this.collection.selectDisc(this, deselectOthers);
+    }
+    deselectDisc(){
+        this.selected = false;
+        this.collection.emit("disc:selected", this.collection.selectedDiscs);
     }
     move(value, dx = false) {
         /**
@@ -353,7 +357,7 @@ export class DiscCollection {
         }
         this.addDisc(null, true);
     }
-    selectDisc(disc, deselect = true, triggerEvent = true){
+    selectDisc(disc, deselectOthers = true, triggerEvent = true){
         /**
          * Selects one or more discs.
          *
@@ -368,13 +372,13 @@ export class DiscCollection {
          * @param {Disc|number|Array{Disc|number}} disc
          *        The disc(s) to select, specified either as Disc objects
          *        or indices.
-         * @param {boolean} [deselect=true]
+         * @param {boolean} [deselectOthers=true]
          *        If `true`, all other discs are deselected before selecting
          *        the specified disc(s).
          * @returns {void}
          */
 
-        if (deselect){
+        if (deselectOthers){
             this.discs.forEach(d => d.selected = false);
         }
 
@@ -404,13 +408,16 @@ export class DiscCollection {
         /**
          * changes the position of a single or multiple discs
          * 
-         * @param {Array{Disc}|Disc} discs - Array of discs or single Disc instance that are going to be moved
+         * @param {Array{Disc}|Disc|function} discs - Array of discs, Disc instance or function to filter discs that are to be moved
          * @param {Array{number}|number} value - Array of values that define the new Position
          * @param {boolean} dx - boolean, that decides if the value is an absolute or relative position
          * @param {number} maxPosition - maximum Position the discs are not able to exceed (border). If null then all Positions are allowed. IMPORTANT: this argument is only observed if errorCorrection is enabled.
          * @param {boolean} errorCorrection - boolean, that decides wether overlap between discs and the exceeding maxPosition should be corrected
           */
         if (discs instanceof Disc) {discs = [discs]}
+        else if (typeof discs === "function") {
+            discs = this.discs.filter(discs);
+        }
 
         discs.forEach((disc, index) => {
             // change position
