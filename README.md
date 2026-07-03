@@ -15,7 +15,7 @@
     ·
     <a href="mailto:jan.wiesmann@rwth-aachen.de">Collaborate</a>
     .
-    <a href="https://jjwiese03.github.io/Webinterface_MADMAX/index.html">Documentation</a>
+    <a href="https://jjwiese03.github.io/madmax-simulation-tool/frontend/index.html">Documentation</a>
   </p>
 </p>
 
