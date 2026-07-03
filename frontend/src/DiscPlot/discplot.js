@@ -51,8 +51,6 @@ function setCanvasSize() {
 }
 setCanvasSize();
 
-const graph_pos_chkbx = document.getElementById("graph_pos_chkbx");
-const graph_dist_chkbx = document.getElementById("graph_dist_chkbx");
 
 class Plot{
     constructor(discCanvas, axisCanvas){
@@ -148,7 +146,7 @@ class Plot{
                 this.discContext.stroke();
 
                 // Abstandspfeil zur vorherigen Scheibe
-                if (graph_dist_chkbx.checked && index > 0) {
+                if (index > 0) {
                     const gap = parseFloat(-(prev_disc.position + prev_disc.width - disc.position).toFixed(3));
                     if (gap !== 0) {
                         const arrow_start = this.cm_to_pixel(prev_disc.position + prev_disc.width) + this.padd[3];
@@ -191,20 +189,18 @@ class Plot{
                 }
 
                 // Positionsbeschriftung
-                if (graph_pos_chkbx.checked) {
-                    const posLabel = String(parseFloat(disc.position.toFixed(3))) + this.axis.unit;
-                    this.discContext.save();
-                    this.discContext.translate(
-                        this.cm_to_pixel(disc.position + disc.width / 2) + this.padd[3],
-                        this.padd[0] - 25
-                    );
-                    this.discContext.rotate(-Math.PI / 2);
-                    this.discContext.textBaseline = "middle";
-                    this.discContext.textAlign    = "left"; 
-                    this.discContext.fillStyle    = colors.color_dark_gray;
-                    this.discContext.fillText(posLabel, 0, 0);
-                    this.discContext.restore();
-                }
+                const posLabel = String(parseFloat(disc.position.toFixed(3))) + this.axis.unit;
+                this.discContext.save();
+                this.discContext.translate(
+                    this.cm_to_pixel(disc.position + disc.width / 2) + this.padd[3],
+                    this.padd[0] - 25
+                );
+                this.discContext.rotate(-Math.PI / 2);
+                this.discContext.textBaseline = "middle";
+                this.discContext.textAlign    = "left"; 
+                this.discContext.fillStyle    = colors.color_dark_gray;
+                this.discContext.fillText(posLabel, 0, 0);
+                this.discContext.restore();
 
                 prev_disc = disc;
             });

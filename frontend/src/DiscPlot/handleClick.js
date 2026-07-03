@@ -34,7 +34,13 @@ discplot.discCanvas.addEventListener("mousedown", (event) => {
             disc.selectDisc(!event.ctrlKey);
         }
         else if (event.button === 2 && event.ctrlKey) {
-            disc.selected ? disc.deselectDisc() : disc.selectDisc(false);
+            if (disc.selected) {
+                disc.deselectDisc();
+                return;
+            }
+            else {
+                disc.selectDisc(false);
+            }
         }
 
         // Alten Listener entfernen, falls noch aktiv
@@ -48,7 +54,7 @@ discplot.discCanvas.addEventListener("mousedown", (event) => {
     }
     else discplot.discConfig.clearSelection();
 
-    
+    return;
 });
 
 discplot.discCanvas.addEventListener("mouseup", () => {
@@ -58,12 +64,23 @@ discplot.discCanvas.addEventListener("mouseup", () => {
     }
 });
 
+
 // deactivate context menu on right click
 discplot.discCanvas.addEventListener("contextmenu", (event) => {
     event.preventDefault();
 });
-discplot.axisCanvas.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
+
+// changing the cursor when holding down the control key
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Control") {
+        discplot.discCanvas.style.cursor = "pointer";
+    }
+});
+
+document.addEventListener("keyup", (event) => {
+    if (event.key === "Control") {
+        discplot.discCanvas.style.cursor = "default";
+    }
 });
 
 

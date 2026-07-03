@@ -18,9 +18,7 @@ import discplot from "./discplot.js";
 /* Mirror Checkbox */
 document.getElementById("mirror_checkbox").addEventListener("change", function() {discplot.draw()});
 
-/* Plot Checkbox */
-document.getElementById("graph_dist_chkbx").addEventListener("change", function() {discplot.draw()});
-document.getElementById("graph_pos_chkbx").addEventListener("change", function() {discplot.draw()});
+/* Delete Button */
 document.getElementById("deleteDisc").addEventListener("click", (e) => {discplot.discConfig.deleteSelectedDiscs(); discplot.discConfig.emit("disc:removed")});
 
 
