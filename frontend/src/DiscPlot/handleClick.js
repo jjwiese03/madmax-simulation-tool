@@ -26,6 +26,7 @@ const handleMouseMove = (discs, offsets) => (event) => {
 };
 
 discplot.discCanvas.addEventListener("mousedown", (event) => {
+    if(event.clientY > discplot.discCanvas.height || event.clientY < 0) return; // ignore clicks outside the canvas
     const X = discplot.pixel_to_cm(event.clientX, false);
     const disc = discplot.discConfig.onDisc(X);
 

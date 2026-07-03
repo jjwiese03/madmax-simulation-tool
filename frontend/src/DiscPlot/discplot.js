@@ -68,13 +68,11 @@ class Plot{
         this.init();
     }
     async init(){
-        this.padd = [discCanvas.height * 0.3, discCanvas.width * 0.1, discCanvas.height * 0.3, innerHeight * 0.05]
+        this.padd = [discCanvas.height * 0.3, innerHeight * 0.05, discCanvas.height * 0.3, innerHeight * 0.05]
 
         await document.fonts.ready;
         this.discContext.font = "15px sans-serif";
         this.axisContext.font = "15px sans-serif";
-
-        this.updateScale(10, "cm");     // initiiert die Achse mit einem Standard Intervall von 10cm und der Einheit cm
 
         this.draw(true);
     }

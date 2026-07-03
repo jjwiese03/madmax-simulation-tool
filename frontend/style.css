@@ -256,3 +256,20 @@ a.standard-button{
     background-color: var(--color-light-gray);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.132); 
 }
+
+.standard-button-v2{
+    background-color: var(--madmax-yellow);
+    width: fit-content;
+    color: white;
+    font-family: inherit;
+    font-size: small;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    transition: all .2s;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.132);
+    &:hover{
+        filter: brightness(0.9);
+        transition: all .2s;
+    }
+}
