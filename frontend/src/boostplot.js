@@ -2,8 +2,6 @@ import { colors } from "./utils.js";
 import { transfer_matrix } from "./transfer_matrix.js";
 import discplot from "./DiscPlot/discplot.js";
 
-const ResolutionSlider = document.getElementById("ResolutionSlider");
-ResolutionSlider.addEventListener("change", () => updateBoostplot(discplot.discConfig))
 const fminInput = document.getElementById("fmin");
 const fmaxInput = document.getElementById("fmax");
 
@@ -128,7 +126,7 @@ function initPlots() {
 const linspace = (min, max, n) => Array.from({ length: n }, (_, i) => min + (i / (n - 1)) * (max - min));
 
 export default window.updateBoostplot = (discCollection) => {
-    const n = parseFloat(ResolutionSlider.value)
+    const n = 1000
     const freq = linspace(parseFloat(fminInput.value), parseFloat(fmaxInput.value), n)
 
     if (isNaN(freq[0])) throw new Error("fmin or fmax is missing or invalid!!!");

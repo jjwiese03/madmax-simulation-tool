@@ -14,6 +14,12 @@ export class Axis{
         this.ticks = [];
 
         this.wanted_num_ticks = 5;
+
+        this.init();
+    }
+    init(){
+        // initializes the ticks of the axis
+        this.updateTicks();
     }
     get stepvalue(){
         // finds the right stepsize for an Intervall [start, stop] an the approximately wanted number of ticks num so that the steps are beautifully spaced
@@ -26,12 +32,15 @@ export class Axis{
     }
     setXmax(xmax){
         this.xmax = xmax;
+        return this.xmax;
     }
     setUnit(unit){
         this.unit = unit;
+        return this.unit;
     }
     updateTicks(){
         this.ticks = arange(0, this.xmax, this.stepvalue);
+        return this.ticks;
     }
 }
 

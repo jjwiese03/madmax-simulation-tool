@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulation</title>
 
-    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
 
     <script>
         // create a Flag to check if WebChannels are enabled in the browser
@@ -27,14 +27,14 @@
      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="/frontend/style.css">
-    <link rel="stylesheet" href="/frontend/custom-elements/navbar/navbar.css">
-    <link rel="stylesheet" href="/frontend/custom-elements/switch/switch.css">
-    <link rel="stylesheet" href="/frontend/custom-elements/range-slider/range-slider.css">
-    <link rel="stylesheet" href="/frontend/custom-elements/icon-checkbox/icon-checkbox.css">
+    <link rel="stylesheet" href="frontend/style.css">
+    <link rel="stylesheet" href="frontend/custom-elements/navbar/navbar.css">
+    <link rel="stylesheet" href="frontend/custom-elements/switch/switch.css">
+    <link rel="stylesheet" href="frontend/custom-elements/range-slider/range-slider.css">
+    <link rel="stylesheet" href="frontend/custom-elements/icon-checkbox/icon-checkbox.css">
 
 
-    <script type="module" src="/frontend/src/DiscPlot/index.js" defer></script>
+    <script type="module" src="frontend/src/DiscPlot/index.js" defer></script>
 
 </head>
 <body>
@@ -44,36 +44,29 @@
             <div style="position: relative; height: 50vh;">
                 <canvas id="axis" style="position: absolute;"></canvas>
                 <canvas id="discs" style="position: absolute;"></canvas>
-
-                <!-- <div style="position: absolute; top: 10%; right: 15%; display: flex; gap: 20%;">
-                    
-                    <label class="iconCheckbox" for="graph_dist_chkbx">
-                        <input type="checkbox" name="graph_dist_chkbx" id="graph_dist_chkbx" checked>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" viewBox="0 0 100 100"><path stroke-width="13" stroke-linecap="round" d="M10 80V20m80 60V20"/><path stroke-width="5" stroke-linecap="round" d="M25 50h50"/><path fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M40 35 25 50l15 15m20-30 15 15-15 15"/></svg>
-                    </label>
-
-                    <label class="iconCheckbox" for="graph_pos_chkbx">
-                        <input type="checkbox" name="graph_pos_chkbx" id="graph_pos_chkbx" checked>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" viewBox="0 0 100 100"><path stroke-width="13" stroke-linecap="round" d="M90 80V20"/><path stroke-width="5" stroke-linecap="round" d="M20 50h55"/><path fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="m60 35 15 15-15 15"/></svg>
-                    </label>
-                </div> -->
             </div>
             <div class="card-grid">
                 <!--card 1-->
                 <div class="card">
                     <!-- navigation bar -->
-                    <h4>Simple</h4>
+                    <h4>Simple Controls</h4>
                     <div class="nav-wrap">
                         <div class="bubble active"></div>
                         <div class="bubble hover"></div>
-                        <nav class="nav" style="font-size: smaller;">
-                            <a class="active" href="#">Position</a>
-                            <a href="#">Material</a>
-                            <a href="#">Settings</a>
+                        <nav class="nav-1" style="font-size: smaller;">
+                            <a class="active" href="#tab-Position">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M360-200q-117 0-198.5-81.5T80-480q0-117 81.5-198.5T360-760q117 0 198.5 81.5T640-480q0 117-81.5 198.5T360-200Zm0-280Zm280 276v-80q70-14 115-69t45-127q0-72-45-127t-115-69v-80q104 14 172 92.5T880-480q0 105-68 183.5T640-204ZM501.5-338.5Q560-397 560-480t-58.5-141.5Q443-680 360-680t-141.5 58.5Q160-563 160-480t58.5 141.5Q277-280 360-280t141.5-58.5Z"/></svg>
+                            </a>
+                            <a href="#tab-Material">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M176-120q-19-4-35.5-20.5T120-176l664-664q21 5 36 20.5t21 35.5L176-120Zm-56-252v-112l356-356h112L120-372Zm0-308v-80q0-33 23.5-56.5T200-840h80L120-680Zm560 560 160-160v80q0 33-23.5 56.5T760-120h-80Zm-308 0 468-468v112L484-120H372Z"/></svg>
+                            </a>
+                            <a href="#tab-Settings">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+                            </a>
                         </nav>
                     </div>
-                    <!-- tab: Positioning -->
-                    <div class="tab-window" id="DiscSettings">
+                    <div class="tab-window" id="SimpleTabs">
+                        <!-- tab: Positioning -->
                         <div class="tab tab-size-1" id="tab-Position">
                             <div style="text-align: center;" id="discNumberString">
                                 no disc selected
@@ -139,7 +132,7 @@
                             <div style="display: flex; justify-content: center; gap: 20px;">
                                 <div class="input-wrapper" style="font-size: small;">
                                     fmin
-                                    <input id="fmin"  type="text" name="position" class="standard-number-input" value="0" onchange="window.updateBoostplot(window.discplot.discConfig);">
+                                    <input id="fmin"  type="text" name="position" class="standard-number-input" value="29.8" onchange="window.updateBoostplot(window.discplot.discConfig);">
                                 </div>
 
                                 <h4>-</h4>
@@ -155,8 +148,8 @@
                 </div>
 
                 <!-- card 2 -->
-                 <div class="card" style="height: 100%; padding: 0;">
-                    <h4>Advanced</h4>
+                 <div class="card" style="padding: 0;">
+                    <h4>Advanced Controls</h4>
                     <div style="display: flex; margin: 10px 15px; gap: 10px;">
                         <button id="run" class="standard-button">Run</button>
                         <button id="Terminal" class="standard-button">Terminal</button>
@@ -213,14 +206,52 @@
                             define.amd = false;
                         });
                     </script>
-                    <script type="module" src="/frontend/src/CodeEditor/pyodide-main.js"></script>
+                    <script type="module" src="frontend/src/CodeEditor/pyodide-main.js"></script>
                  </div>
 
                 <!-- card 2 -->
                  <div class="card" style="height: auto;">
                     <h4>Small Applications</h4>
+                    <div class="nav-wrap">
+                        <div class="bubble active"></div>
+                        <div class="bubble hover"></div>
+                        <nav class="nav-1" style="font-size: smaller;">
+                            <a class="active" href="#tab-Download">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                            </a>
+                            <a href="#tab-Noise">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-240v-480h80v480h-80ZM440-80v-800h80v800h-80ZM120-400v-160h80v160h-80Zm480 160v-480h80v480h-80Zm160-160v-160h80v160h-80Z"/></svg>
+                            </a>
+                        </nav>
+                    </div>
+                    <div class="tab-window" id="SimpleTabs">
+                        <!-- tab: Download -->
+                        <div class="tab" id="tab-Download">
+                            
+                            <!-- Inhalt -->
+                            <!-- <div class="card" style="width: max-content; height: min-content; background-color: white; margin: 0 10%; box-sizing: content-box; padding: 5px;">
+                                <h5 style="text-align: center; margin: 5px 0;">Simulation Data</h5>
+                                <div>
+                                    <button class="standard-button-v2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>       
+                                    </button>
+                                    <button class="standard-button-v2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                    </button>
 
-                 </div>
+                                </div>
+                            </div> -->
+                            
+                        </div>
+                        <!-- tab: Noise -->
+                        <div class="tab tab-size-1" id="tab-Noise" style="display: none;">
+                            
+                            <!-- Inhalt -->
+                             Noise
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
             
             
@@ -231,27 +262,18 @@
 
             <!-- Boostplot -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-            <div  style="width: auto; height: 40%; margin-bottom: 50px;">
+            <div  style="width: auto; height: 40%;">
                 <canvas id="boostplot" aria-label="Plot for boostfactor curve"></canvas>
             </div>
 
             <!-- Reflectivity Plot -->
-            <div  style="width: auto; height: 40%; margin-bottom: 50px;">
+            <div  style="width: auto; height: 40%;">
                 <canvas id="reflectivityplot" aria-label="Plot for reflectivity curve"></canvas>
-            </div>
-
-            <div style="display: flex; align-items: center;">
-                <!-- range slider for resolution -->
-                <div class="range-slider-container">
-                    <label for="ResolutionSlider">Resolution</label>
-                    <input type="range" min="5" max="1000" value="50" id="ResolutionSlider">
-                </div>
             </div>
         </div>
     </div>
 
-
     <!-- Scripte -->
-    <script src="/frontend/custom-elements/navbar/navbar.js"></script>
+    <script src="frontend/custom-elements/navbar/navbar.js"></script>
 </body>
 </html>
