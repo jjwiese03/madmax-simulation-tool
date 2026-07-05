@@ -1,0 +1,12 @@
+{
+  "name": "madmax-simulation-tool",
+  "version": "1.0.0",
+  "description": "Interactive web application for simulating and analyzing the boost factor of the MADMAX dielectric haloscope, supporting parameter studies, optimization, and visualization of experimental configurations. ",
+  "main": "../frontend/src/index.js",
+  "scripts": {
+    "docs": "documentation build ../frontend/src/DiscPlot/discplot.js -f html -o DiscPlotAPI"
+  },
+  "devDependencies": {
+    "documentation": "^14.0.0"
+  }
+}
