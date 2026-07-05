@@ -1,5 +1,6 @@
 /**
- * @module DiscCollection
+ * @module DiscManager
+ * @ignore
  */
 
 /**
