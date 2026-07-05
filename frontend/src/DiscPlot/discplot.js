@@ -12,6 +12,8 @@
  * Usage:
  * A public API is exposed by this module. It is used internally by the Discplot component to manage user interactions and update the plot accordingly.
  * @module discplot
+ * 
+ * @ignore
  */
 
 
@@ -39,6 +41,8 @@ const width_input = document.getElementById("width-input");
  * canvas) to the size of its wrapper div. Should be called once on load and
  * again whenever the window is resized.
  *
+ * @ignore
+ * 
  * @returns {null} Always returns `null`.
  */
 function setCanvasSize() {
