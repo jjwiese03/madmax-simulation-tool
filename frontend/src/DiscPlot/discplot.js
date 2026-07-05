@@ -11,6 +11,7 @@
  * 
  * Usage:
  * A public API is exposed by this module. It is used internally by the Discplot component to manage user interactions and update the plot accordingly.
+ * @module discplot
  */
 
 
@@ -33,10 +34,14 @@ const position_input = document.getElementById("position-input");
 const rel_poisition_input = document.getElementById("rel-position-input");
 const width_input = document.getElementById("width-input");
 
+/**
+ * Sets the canvas size of the discplot (both the disc canvas and the axis
+ * canvas) to the size of its wrapper div. Should be called once on load and
+ * again whenever the window is resized.
+ *
+ * @returns {null} Always returns `null`.
+ */
 function setCanvasSize() {
-    /**
-     * sets the canvas size of the discplot to the size of its wrapper div
-     */
     const discCanvas = document.getElementById("discs");
     const Parent = discCanvas.parentElement
 
@@ -52,7 +57,18 @@ function setCanvasSize() {
 setCanvasSize();
 
 
+/**
+ * Renders and manages the disc plot: draws the axis, the discs, the marquee
+ * selection rectangle and the mirror indicator onto two stacked `<canvas>`
+ * elements, and converts between pixel and cm coordinates.
+ */
 class Plot{
+    /**
+     * Creates a new Plot bound to the given canvas elements.
+     *
+     * @param {HTMLCanvasElement} discCanvas - The canvas the discs are drawn onto.
+     * @param {HTMLCanvasElement} axisCanvas - The canvas the axis is drawn onto.
+     */
     constructor(discCanvas, axisCanvas){
         this.discCanvas = discCanvas;
         this.axisCanvas = axisCanvas;
@@ -67,6 +83,14 @@ class Plot{
         
         this.init();
     }
+
+    /**
+     * Initializes the plot: computes the canvas padding, waits for the
+     * fonts to be ready, sets the canvas font and performs the initial
+     * draw (including the axis).
+     *
+     * @returns {Promise<void>} Resolves once the initial draw has been performed.
+     */
     async init(){
         this.padd = [discCanvas.height * 0.3, innerHeight * 0.05, discCanvas.height * 0.3, innerHeight * 0.05]
 
@@ -76,6 +100,21 @@ class Plot{
 
         this.draw(true);
     }
+
+    /**
+     * Draws the plot onto the canvases.
+     *
+     * When `axis` is `true`, the axis line, ticks, tick labels and axis
+     * label are (re-)drawn onto the axis canvas.
+     *
+     * When `discs` is `true`, all discs, the gap arrows and labels between
+     * them, the marquee selection rectangle (if active) and the mirror
+     * indicator (if enabled) are (re-)drawn onto the disc canvas.
+     *
+     * @param {boolean} [axis=false] - Whether to (re-)draw the axis.
+     * @param {boolean} [discs=true] - Whether to (re-)draw the discs.
+     * @returns {void}
+     */
     draw(axis = false, discs = true) {
 
         if (axis) {
@@ -231,6 +270,15 @@ class Plot{
         }
         
     }
+
+    /**
+     * Updates the axis scale (maximum value and/or unit), recomputes the
+     * tick marks accordingly and redraws the plot.
+     *
+     * @param {number} [xmax=10] - The new maximum value of the axis. Pass `null` to leave the current maximum unchanged.
+     * @param {string} [unit="cm"] - The new unit label for the axis. Pass `null` to leave the current unit unchanged.
+     * @returns {void}
+     */
     updateScale(xmax=10, unit="cm"){
         if (xmax != null) {this.axis.setXmax(xmax)};
         if (unit != null) {this.axis.setUnit(unit)};
@@ -238,10 +286,27 @@ class Plot{
 
         this.draw();
     }
+
+    /**
+     * Converts a pixel coordinate on the axis canvas to a position in the
+     * plot's real-world unit (e.g. cm), based on the current axis scale.
+     *
+     * @param {number} x_pixel - The pixel coordinate to convert.
+     * @param {boolean} [includesPadding=true] - Whether `x_pixel` already includes the left padding offset. If `false`, the left padding is subtracted before conversion.
+     * @returns {number} The corresponding position in the plot's real-world unit.
+     */
     pixel_to_cm(x_pixel, includesPadding = true) {
         const position = x_pixel - (includesPadding ? 0 : this.padd[3])
         return (position / (this.axisCanvas.width - this.padd[1] - this.padd[3] - 20)) * this.axis.xmax;
     }
+
+    /**
+     * Converts a position in the plot's real-world unit (e.g. cm) to a
+     * pixel offset on the axis canvas, based on the current axis scale.
+     *
+     * @param {number} x - The position (in the plot's real-world unit) to convert.
+     * @returns {number} The corresponding pixel offset, truncated to an integer.
+     */
     cm_to_pixel(x){
         return Math.trunc(x*(this.axisCanvas.width-this.padd[1]-this.padd[3]-20)/this.axis.xmax)
     }
