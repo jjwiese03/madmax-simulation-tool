@@ -3,20 +3,35 @@ layout: default
 title: Startseite
 ---
 
-# Introduction 
-In diesem Tutorial Starten wir die App und geben wir einen Überblick über die haupfunktionen. 
-# Get Started
-Zunächst öffne entweder die online Version der App unter folgendem [link](https://jjwiese03.github.io/madmax-simulation-tool/frontend/#tab-Position), oder starte die App lokal. Dazu clone das [Github Repo](https://github.com/jjwiese03/madmax-simulation-tool.git) mit folgendem Befehl im Terminal:
-```
+# Introduction
+
+In this tutorial, you will learn how to start the application and get an overview of its main features.
+
+# Getting Started
+
+You can either use the online version of the application or run it locally.
+
+To use the online version, open the following page in your browser:
+
+<https://jjwiese03.github.io/madmax-simulation-tool/frontend/#tab-Position>
+
+To run the application locally, first clone the GitHub repository:
+
+```bash
 git clone https://github.com/jjwiese03/madmax-simulation-tool.git
-``` 
-Navigiere nun von da aus in den `backend`- Ordner und starte dort mit Julia die das startscript `startup.jl`
+```
+
+Next, navigate to the `backend` directory, start a Julia session, and execute the startup script:
 
 ```julia
-cd backend
-julia 
+cd("backend")
 include("startup.jl")
-``` 
-öffne nun im Browser den lokalhost [http://localhost:8000/frontend](http://localhost:8000/frontend).
->Wichtig!!! Die Online Version der App enthält nur Grundlegende Features, wie Berechnung des Boostfaktors und der Reflektivität. Damit die App vollumfänglich genutzt werden kann muss sie lokal gestartet werden. 
-# Funktionen
+```
+
+Once the server has started, open the following address in your web browser:
+
+<http://localhost:8000/frontend>
+
+> **Note:** The online version provides only the core functionality of the application, including the calculation of the boost factor and reflectivity. To access the complete feature set, the application must be run locally.
+
+# Features
