@@ -23,8 +23,9 @@ git clone https://github.com/jjwiese03/madmax-simulation-tool.git
 
 Next, navigate to the `backend` directory, start a Julia session, and execute the startup script:
 
-```julia
-cd("backend")
+```bash
+cd backend
+julia
 include("startup.jl")
 ```
 
