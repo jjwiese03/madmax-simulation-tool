@@ -155,7 +155,7 @@
                     <div style="display: flex; margin: 10px 15px; gap: 10px;">
                         <button id="run" class="standard-button">Run</button>
                         <button id="Terminal" class="standard-button">Terminal</button>
-                        <a id="docs" class="standard-button" style="margin-left: auto;" href="/docs/index.html">Docs</a>
+                        <a id="docs" class="standard-button" style="margin-left: auto;" href="https://jjwiese03.github.io/madmax-simulation-tool/docs/DiscPlotAPI/">Docs</a>
                     </div>
                     
                     <div id="editor" style="flex: 1; margin: 0 10px 10px 10px;"></div>
@@ -218,10 +218,10 @@
                         <div class="bubble active"></div>
                         <div class="bubble hover"></div>
                         <nav class="nav-1" style="font-size: smaller;">
-                            <a class="active" href="#tab-Download">
+                            <a style="display: none;" href="#tab-Download">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                             </a>
-                            <a href="#tab-Noise">
+                            <a class="active" href="#tab-Noise">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-240v-480h80v480h-80ZM440-80v-800h80v800h-80ZM120-400v-160h80v160h-80Zm480 160v-480h80v480h-80Zm160-160v-160h80v160h-80Z"/></svg>
                             </a>
                             <a href="#tab-Visualisation">
@@ -231,7 +231,7 @@
                     </div>
                     <div class="tab-window" id="SimpleTabs">
                         <!-- tab: Download -->
-                        <div class="tab" id="tab-Download">
+                        <div class="tab" style="display: none;" id="tab-Download">
                             
                             <!-- Inhalt -->
                             <!-- <div class="card" style="width: max-content; height: min-content; background-color: white; margin: 0 10%; box-sizing: content-box; padding: 5px;">
@@ -249,7 +249,7 @@
                             
                         </div>
                         <!-- tab: Noise -->
-                        <div class="tab tab-size-1" id="tab-Noise" style="display: none;">
+                        <div class="tab tab-size-1" id="tab-Noise">
                             <div style="display: flex; flex-direction: column; gap: 10px; width: 100%">
                                 <!-- get inputs for B, Tsys, A, t and g-->
                                 <div style="display: flex; gap: 10px; justify-content: space-between;">

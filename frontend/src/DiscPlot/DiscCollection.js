@@ -686,7 +686,7 @@ export class DiscCollection {
         if(Array.isArray(discs)) {discs.forEach((disc) => this.changeDiscs(disc, properties))}
         else{
             for (const [key, value] of Object.entries(properties)) {
-                if(discs[key]) continue;
+                if(!(key in discs)) continue;
                 
                 discs[key] = value;
                 if(triggerEvent) this.emit("disc:property");
