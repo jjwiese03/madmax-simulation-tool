@@ -26,6 +26,9 @@
     <!-- Chart.js -->
      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
+    <!-- Plotly.js for Heatmap-->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
     <!-- stylesheets -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="custom-elements/navbar/navbar.css">
@@ -125,7 +128,7 @@
                                 <h5 style="height: 34px; margin: 0; display: flex; justify-content: center; align-items: center; font-size: small;">Mirror</h5>
                                 <div style="height: 30px; display: flex; justify-items: center; align-items: center;">
                                     <label class="switch">
-                                        <input type="checkbox" id="mirror_checkbox">
+                                        <input type="checkbox" id="mirror_checkbox" onchange="if(window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig); if(window.updateEFieldPlot) window.updateEFieldPlot(); if(window.updateNoisePlots) window.updateNoisePlots();">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -302,25 +305,13 @@
                                 <!-- Frequency Choice -->
                                 <div class="input-wrapper"> 
                                     <label for="freq-input" style="font-size: small; margin-bottom: 3px;">Frequency (GHz)</label>
-                                    <input id="freq-input" type="number" class="standard-number-input" value="22" step="0.01" style="width: 80px;">
+                                    <input id="freq-input" type="number" class="standard-number-input" value="29.9" step="any" style="width: 80px;">
                                 </div>
 
                                 <!-- Slider -->
                                 <div class="input-wrapper" style="width: 100%">
-                                    <input id="freq-slider" type="range" min="20" max="40" value="29" step="0.01" style="width: 100%; accent-color: var(--madmax-yellow); cursor: pointer;">
+                                    <input id="freq-slider" type="range" min="29.8" max="30" value="29.9" step="any" style="width: 100%; accent-color: var(--madmax-yellow); cursor: pointer;">
                                 </div>
-
-                                <!-- Min Max for slider -->
-                                 <div class="input-row" style="font-size: x-small;">
-                                    <div class="input-wrapper">
-                                        <label for="slider-min" style="font-size: x-small;">Min</label>
-                                        <input id="slider-min" type="text" class="standard-number-input" value="29.8" style="width: 45px; height: 22px">
-                                    </div>
-                                    <div class="input-wrapper">
-                                        <label for="slider-max" style="font-size: x-small;">Max</label>
-                                        <input id="slider-max" type="text" class="standard-number-input" value="30" style="width: 45px; height: 22px">
-                                    </div>
-                                 </div>
 
                                  <!-- Max Amplitude -->
                                  <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0, 0, 0, 0, 0.1);">
@@ -342,6 +333,7 @@
                                     </div>
                                  </div>
 
+                                 <!-- switch for e field hide/show-->
                                 <div style="display: flex; flex-direction: column; align-items: center; margin-top: 15px;">
                                     <h5 style="margin: 0 0 8px 0; font-size: small; color: #333;">E-Field</h5>
                                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
@@ -353,6 +345,11 @@
                                         <span style="font-size: small; color: #5F5E5A;">Show</span>
                                     </div>
                                 </div>
+
+                                <!-- button to show heatmap-->
+                                <button id="open-heatmap-btn" class="standard-button" style="margin-top: 15px; width: 100%;">
+                                    Generate Heatmap
+                                </button>
                             </div> 
                         </div>  
                     </div>
@@ -393,6 +390,22 @@
             <!-- Coupling constant plot for each frequency-->
             <div id="wrapper-coupling" style="width: auto; height: 40%; display: none;">
                 <canvas id="couplingplot" aria-label="Plot for axion-photon coupling"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal box for heatmap -->
+    <div id="heatmap-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>E-Field Amplitude Distribution</h3>
+                <button id="close-heatmap-btn" class="close-button">&times;</button>
+            </div>
+            <div id="heatmap-plot-area" style="width: 100%; height: 500px;"></div>
+
+            <!-- Loading Screen -->
+            <div id="heatmap-loader" style="display: none; text-align: center; padding:20px;">
+                Calculating Matrix...
             </div>
         </div>
     </div>

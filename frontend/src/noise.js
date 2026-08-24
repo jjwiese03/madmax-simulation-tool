@@ -35,8 +35,8 @@ function getNoiseArrays(fMin, fMax, setup, eps, tand, BE, A, TSys, tIntSec, gTar
         kwargs["tand"] = tand;
     }
     
-    const positions = setup.discs.map(d => d.position);
-    const widths = setup.discs.map(d => d.width);
+    const positions = setup.discs.map(d => d.position / 100.0);
+    const widths = setup.discs.map(d => d.width / 100.0);
 
     const {boostfactor} = transfer_matrix(freqsHz, positions, widths, kwargs);
 
@@ -156,7 +156,7 @@ function makeNoiseChartConfig(data, yLabel, lineColor, c, reverseY = false) {
     };
 }
 
-function initNoisePlots() {
+window.initNoisePlots = function() {
     const c = getNoiseColors();
     
     if (window.couplingPlot) {
@@ -231,47 +231,3 @@ window.updateNoisePlots = function() {
         initNoisePlots();
     }
 };
-
-// lastly, event listeners
-document.addEventListener("DOMContentLoaded", () => {
-    initNoisePlots();
-
-    const noiseInputs = ["noise-bfield", "noise-area", "noise-tsys", "noise-time", "noise-gtarget", "fmin", "fmax"];
-    
-    noiseInputs.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.addEventListener("change", () => {
-                if (typeof window.updateNoisePlots === "function") {
-                    window.updateNoisePlots(); 
-                }
-            });
-        }
-    });
-
-    const plotToggle = document.getElementById("plot-toggle-switch");
-    if (plotToggle) {
-        plotToggle.addEventListener("change", (e) => {
-            const isNoiseMode = e.target.checked;
-            const plotsContainer = document.querySelector(".plots");
-
-            if (plotsContainer) {
-                plotsContainer.classList.toggle("noise-mode", isNoiseMode);
-            }
-
-            const wrapBoost = document.getElementById("wrapper-boost");
-            const wrapRefl = document.getElementById("wrapper-reflectivity");
-            const wrapSNR = document.getElementById("wrapper-snr");
-            const wrapCoupling = document.getElementById("wrapper-coupling");
-
-            if (wrapBoost) wrapBoost.style.display = isNoiseMode ? "none" : "block";
-            if (wrapRefl) wrapRefl.style.display = isNoiseMode ? "none" : "block";
-            if (wrapSNR) wrapSNR.style.display = isNoiseMode ? "block" : "none";
-            if (wrapCoupling) wrapCoupling.style.display = isNoiseMode ? "block" : "none";
-
-            if (isNoiseMode && typeof window.updateNoisePlots === "function") {
-                window.updateNoisePlots();
-            }
-        });
-    }
-});

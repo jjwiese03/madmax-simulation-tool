@@ -425,6 +425,10 @@ export class DiscCollection {
     onDisc(position) {
         const canidate = this.positionNeighbour(position, "left");
 
+        if (!canidate) {
+            return null;
+        }
+        
         return (canidate.position <= position && canidate.rightEdge >= position) ? canidate : null;
     }
 
@@ -683,14 +687,15 @@ export class DiscCollection {
      * @returns {void}
      */
     changeDiscProperty(discs, properties, triggerEvent = true){
-        if(Array.isArray(discs)) {discs.forEach((disc) => this.changeDiscs(disc, properties))}
+        if(Array.isArray(discs)) {discs.forEach((disc) => this.changeDiscProperty(disc, properties, triggerEvent))}
         else{
             for (const [key, value] of Object.entries(properties)) {
                 if(!(key in discs)) continue;
                 
                 discs[key] = value;
-                if(triggerEvent) this.emit("disc:property");
             }
+
+            if(triggerEvent) this.emit("disc:property");
         }
         return;
     }

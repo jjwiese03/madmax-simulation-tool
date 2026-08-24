@@ -105,7 +105,8 @@ export function transfer_matrix(freqs, position, thickness,
             matmul(W, T, S);  matsub(M, W);
             matmul(W, T, Gv); T.set(W);
 
-            const prev = i === 0 ? 0 : position[i-1] + thickness[0];
+            // there as also a problem where thickness[0] has been used, instead of thickness[i-1]
+            const prev = i === 0 ? 0 : position[i-1] + thickness[i-1];
             const d    = position[i] - prev;
             const ph   = -2 * f * d / c0;
             const pp1  = cispi(ph, 0);
