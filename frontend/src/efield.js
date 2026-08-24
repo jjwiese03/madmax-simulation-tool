@@ -1,7 +1,12 @@
+/* This Code is essentially a JS rewriting of PlotEFieldOneDim.jl in Backend
+* since it is pretty simple, JS deployment in frontend is reasonable
+* I'll explain logic as we go
+*/
+
 const c0 = 299792458;
 
-//Helper functions and new class for complex numbers
-
+//native JS does not have complex numbers, therefore we create a class with basic
+//arithmetics to work with complex numbers
 class Complex{
     constructor(re, im) {
         this.re = re;
@@ -48,7 +53,8 @@ function multMatVec(M, v) {
 }
 
 //Since transfer_matrix returns the squared boost and reflectivity, we have to calculate r and b again
-//This is transfer_matrix.jl rewritten essentially
+//This is transfer_matrix.jl rewritten essentially, BUT reflecitivies and boosts are not squared this time
+// for documentation see transfer_matrix.jl or .js
 function getRAndB(freq, distances, eps, tand, thicknesses) {
     const epsC = new Complex(eps, -tand * eps);
     const nd = csqrtComplex(epsC);
@@ -129,52 +135,89 @@ function getRAndB(freq, distances, eps, tand, thicknesses) {
     return {r: R, b: B, Gd: Gd, Gv: Gv};
 }
 
+//the heart of this script
+/* this function calculates the resulting electric field between the discs
+* for any given disc setup
+*/
 function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesses = [], dpi = 500) {
+    //if there are no discs, there is no field :)
     if (!distances || distances.length === 0) {
         return {z : [], E_re: [], E_im: []};
     }
 
+    // depending on which case we're looking at, we need to configure our starting vector differently
+    // e.g. if you might want to do a reflecivity measurement, you will inject a field with amplitude R
+    // going inside the MADMAX, and a field leaving the MADMAX
     const rbData = getRAndB(freq, distances, eps, tand, thicknesses);
     const R = rbData.r;
     const B = rbData.b;
     const G_d2v = rbData.Gd;
     const G_v2d = rbData.Gv;
 
+    // see transfer_matrix
     const epsC = new Complex(eps, -tand * eps);
     const nd = csqrtComplex(epsC);
     const twoNd = nd.scale(2.0);
 
+    // V is our propagation Vector, which will hold all the information of the electric field at a given
+    // position z
+    // we declare those four variables without an assignment, since every variable will change
+    // depending on isAxion
     let V;
     let S_axion;
     let E_a;
     let E_a_vac;
 
+    // if we want to look at the case, where the axion is converting into two photons, the starting vector
+    // is (E_R, E_L) = (complex boost, 0), where first coordinate corresponds to waves leaving the MADMAX and second going inside
+    // This relies on the assumption, that the antenna does not reflect part of the wave back.
+    // the boost amplitude B is given by B = E_R / E_mirror, with E_mirror being the electric field reflected with a single mirror setup
+    // As a reference emission we choose E_mirror=1, therefore B=E_R
     if (isAxion) {
         V = [B, new Complex(0.0, 0.0)];
+
+        // in this case we also have to remember the axion source term (see transfer_matrix)
         S_axion = new Complex(1.0, 0.0).div(epsC).sub(new Complex(1, 0)).scale(0.5);
         E_a = new Complex(1.0, 0.0).div(epsC);
         E_a_vac = new Complex(1.0, 0.0);
-    } else {
+    } 
+    //in this case we have to induce the booster externally via a reference field E_L = 1, the booster then reflects a part
+    // back into the antenna, which is given by R
+    else {
         V = [R, new Complex(1.0, 0.0)];
+
+        // We will not detect an axion this time, therefore all source terms vanish
         S_axion = new Complex(0.0, 0.0);
         E_a = new Complex(0.0, 0.0);
         E_a_vac = new Complex(0.0, 0.0);
     }
 
+    // In this calculation, we're slowly propagatin our starting Vector V from the right (outermost disc) to the left (mirror)
+    // we will create two empty arrays, that save positions and Electric field values
     let z_vals = [];
     let E_vals = [];
 
+    // we are adding all disc distances and thicknesses together to land on the rightmost edge, schematic:
+    // (mirror) |   | |  |   |(HERE)
     let current_z = distances.reduce((acc, val) => acc + val, 0) + thicknesses.reduce((acc, val) => acc + val, 0);
 
+    // we can repeat the propagation for each disc -> vacuum propagation
+    // therefore create a for loop over the length of distances array
     for (let i = distances.length - 1; i >= 0; i--) {
+        // from the rightmost vaccum we enter the disc. The new amplitude vector is multiplied by G_v2d (G vacuum to disc)
         V = multMatVec(G_v2d, V);
+
+        //check if we need to add the axion source term at the boundary or not
         if (isAxion) {
             V = [V[0].add(S_axion), V[1].add(S_axion)];
         }
 
+        // we get the thickness of our current disc, and then subtract it from our current position
+        // therefore we now know the left edge of the disc
         let thick = thicknesses[i];
         let z_next = current_z - thick;
 
+        
         for (let k = 0; k < dpi; k++) {
             let z = current_z - k * ((current_z - z_next) / (dpi - 1));
             z_vals.push(z);
