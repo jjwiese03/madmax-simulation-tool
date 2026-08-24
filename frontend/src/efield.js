@@ -142,7 +142,7 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
     // depending on which case we're looking at, we need to configure our starting vector differently
     // e.g. if you might want to do a reflecivity measurement, you will inject a field with amplitude R
     // going inside the MADMAX, and a field leaving the MADMAX
-    const rbData = getRAndB(freq, distances, eps, tand, thicknesses);
+    const rbData = getRAndB(freq, distances, eps, tand, thicknesses, hasMirror);
     const R = rbData.r;
     const B = rbData.b;
     const G_d2v = rbData.Gd;
@@ -500,7 +500,7 @@ const setup = getCurrentSetup();
                 y0: startZ,
                 y1: endZ,
                 fillcolor: "rgba(255, 255, 255, 0.15)",
-                line: {width: 1, color: "rgba(255, 255, 255, 0.15"},
+                line: {width: 1, color: "rgba(255, 255, 255, 0.15)"},
                 layer: "above"
             });
 
