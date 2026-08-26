@@ -387,10 +387,10 @@ window.updateEFieldPlot = function() {
 
     const fieldData = calculateField(currentIsAxionMode, freqHz, setup.distances, eps, tand, setup.thicknesses, 50, hasMirror);
 
-    const centerY = eCanvas.height - arrangement.padd[2];
-    const maxE = Math.max(...fieldData.E_re.map(Math.abs), ...fieldData.E_im.map(Math.abs), 1);
     const bodyH = eCanvas.height - arrangement.padd[0] - arrangement.padd[2];
-    const scaleY = (bodyH * 0.4) / maxE;
+    const centerY = arrangement.padd[0] + (bodyH / 2); // Nulllinie exakt in die vertikale Mitte setzen
+    const maxE = Math.max(...fieldData.E_re.map(Math.abs), ...fieldData.E_im.map(Math.abs), 1);
+    const scaleY = (bodyH * 0.7) / maxE; // Skalierung auf 45% (insgesamt 90% der Höhe) erhöhen
 
     function getPixelX(cm) {
         return arrangement.padd[3] + arrangement.cm_to_pixel(cm);
@@ -425,7 +425,7 @@ window.updateEFieldPlot = function() {
 
     const maxAmpDisplay = document.getElementById("max-amplitude-display");
     if (maxAmpDisplay) {
-        maxAmpDisplay.textContent = `Max Amplitude |E|/E0: ${maxE.toFixed(2)}`;
+        maxAmpDisplay.textContent = `Max Amplitude |E/E0|: ${maxE.toFixed(2)}`;
     }
 };
 

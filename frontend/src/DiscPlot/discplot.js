@@ -164,6 +164,9 @@ class Plot{
             // ── Scheiben ─────────────────────────────────────────────────────────────
             this.discContext.clearRect(0, 0, this.discCanvas.width, this.discCanvas.height);
 
+            const eFieldToggle = document.getElementById("efield-toggle-switch");
+            const isEFieldActive = eFieldToggle ? eFieldToggle.checked : false;
+
             var prev_disc  = {};
             var arrow_y    = this.discCanvas.height / 2;
 
@@ -187,7 +190,7 @@ class Plot{
                 this.discContext.stroke();
 
                 // Abstandspfeil zur vorherigen Scheibe
-                if (index > 0) {
+                if (index > 0 && !isEFieldActive) {
                     const gap = parseFloat(-(prev_disc.position + prev_disc.width - disc.position).toFixed(3));
                     if (gap !== 0) {
                         const arrow_start = this.cm_to_pixel(prev_disc.position + prev_disc.width) + this.padd[3];

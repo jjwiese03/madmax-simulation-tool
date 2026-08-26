@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (eFieldToggle) {
         eFieldToggle.addEventListener("change", () => {
             if (typeof window.updateEFieldPlot === "function") window.updateEFieldPlot();
+            if (window.discplot) window.discplot.draw();
         });
     }
 
