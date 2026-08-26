@@ -193,7 +193,27 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
 
     // we are adding all disc distances and thicknesses together to land on the rightmost edge, schematic:
     // (mirror) |   | |  |   |(HERE)
-    let current_z = distances.reduce((acc, val) => acc + val, 0) + thicknesses.reduce((acc, val) => acc + val, 0);
+    let base_z = distances.reduce((acc, val) => acc + val, 0) + thicknesses.reduce((acc, val) => acc + val, 0);
+
+    let lambda = c0 / freq;
+    let extraDpi = Math.max(2, Math.round((lambda * 100.0) * pointsPerCm));
+
+    for (let k = 0; k < extraDpi; k++) {
+        let z = (base_z + lambda) - k * (lambda / (extraDpi - 1));
+        z_vals.push(z);
+
+        let phase = new Complex((2 * freq * (z - base_z)) / c0, 0);
+        let E_prop = V[0].mul(cispiComplex(phase)).add(V[1].mul(cispiComplex(phase.scale(-1))));
+
+        if (isAxion) {
+            E_vals.push(E_a_vac.sub(E_prop));
+        } else {
+            E_vals.push(E_prop);
+        }
+    }
+
+    let current_z = base_z;
+
 
     // we can repeat the propagation for each disc -> vacuum propagation
     // therefore create a for loop over the length of distances array
