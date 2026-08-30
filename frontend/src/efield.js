@@ -230,7 +230,7 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
         // therefore we now know the left edge of the disc
         let thick = thicknesses[i];
         let z_next = current_z - thick;
-        let localDpi = Math.max(2, Math.round((thick * 100.0) * pointsPerCm));
+        let localDpi = Math.max(2, Math.round((thick * 100.0) * pointsPerCm * nd.re));
 
         for (let k = 0; k < localDpi; k++) {
             if (z_vals.length > 0 && k===0) {

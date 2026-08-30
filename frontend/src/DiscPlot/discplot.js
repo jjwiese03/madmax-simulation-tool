@@ -291,7 +291,7 @@ class Plot{
         if (unit != null) {this.axis.setUnit(unit)};
         this.axis.updateTicks();
 
-        this.draw();
+        this.draw(true, true);
     }
 
     /**
@@ -327,3 +327,24 @@ window.discplot = new Plot(discCanvas, axisCanvas);
 export default window.discplot;
 
 window.addEventListener('resize', () => {setCanvasSize(); discplot.init();});
+
+function adjustAxisOnDemand() {
+    if (!window.discplot || !window.discplot.discConfig) return;
+
+    const lastDisc = window.discplot.discConfig.lastDisc;
+    if (!lastDisc) return;
+
+    const max_pos_cm = lastDisc.rightEdge;
+    const target_xmax = Math.max(10, Math.ceil((max_pos_cm + 2) / 5) * 5);
+
+    if (window.discplot.axis.xmax !== target_xmax) {
+        window.discplot.updateScale(target_xmax);
+    }
+}
+
+window.addEventListener("mouseup", adjustAxisOnDemand);
+
+const posInput = document.getElementById("position-input");
+if (posInput) {
+    posInput.addEventListener("change", adjustAxisOnDemand);
+}

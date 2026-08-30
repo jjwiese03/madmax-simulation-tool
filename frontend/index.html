@@ -29,6 +29,9 @@
     <!-- Plotly.js for Heatmap-->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
+    <!-- My Worker for optimization-->
+    <script type="module" src="src/Optimizer/optimizer_client.js" defer></script>
+
     <!-- stylesheets -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="custom-elements/navbar/navbar.css">
@@ -70,6 +73,7 @@
                             </a>
                         </nav>
                     </div>
+
                     <div class="tab-window" id="SimpleTabs">
                         <!-- tab: Positioning -->
                         <div class="tab tab-size-1" id="tab-Position">
@@ -230,6 +234,9 @@
                             <a href="#tab-Visualisation">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m636-84-57-57q66-66 103.5-152.5T720-480q0-100-37.5-186.5T579-819l57-57q76 76 120 177.5T800-480q0 117-44 218.5T636-84ZM523-197l-57-57q44-44 69-102t25-124q0-66-25-124t-69-102l57-57q54 54 85.5 127T640-480q0 83-31.5 156T523-197ZM410-310l-57-57q22-22 34.5-51t12.5-62q0-33-12.5-62T353-593l57-57q32 32 51 76t19 94q0 50-19 94t-51 76ZM160-160v-640h80v240q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400v240h-80Z"/></svg>
                             </a>
+                            <a href="#tab-Optimization">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M120-160v-80h110l-16-14q-52-46-73-105t-21-119q0-111 66.5-197.5T360-790v84q-72 26-116 88.5T200-478q0 45 17 87.5t53 78.5l10 10v-98h80v240H120Zm717-360h-81q-5-35-21.5-67T690-648l-10-10v98h-80v-240h240v80H730l16 14q41 42 63 89t28 97ZM680-40l-12-60q-12-5-22.5-10.5T624-124l-58 18-40-68 46-40q-2-14-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T668-380l12-60h80l12 60q12 5 22.5 11t21.5 15l58-20 40 70-46 40q2 12 2 25t-2 25l46 40-40 68-58-18q-11 8-21.5 13.5T772-100l-12 60h-80Zm40-120q33 0 56.5-23.5T800-240q0-33-23.5-56.5T720-320q-33 0-56.5 23.5T640-240q0 33 23.5 56.5T720-160Z"/></svg>
+                            </a>
                         </nav>
                     </div>
                     <div class="tab-window" id="SimpleTabs">
@@ -351,7 +358,41 @@
                                     Generate Heatmap
                                 </button>
                             </div> 
-                        </div>  
+                        </div>
+                        
+                        <!-- tab: Optimization-->
+                        <div class="tab tab-size-1" id="tab-Optimization" style="display: none;">
+                            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%">
+                                <h5 style="margin: 0; font-size: small; color: #333; text-align: center;">Target Frequency Range</h5>
+                                <div style="display: flex; gap: 10px; justify-content: space-between;">
+                                    <div class="input-wrapper" style="flex: 1; align-items: center;">
+                                        <label for="opt-fmin" style="font-size: small; margin-bottom: 3px;">f_min [GHz]</label>
+                                        <input id="opt-fmin" type="text" class="standard-number-input" value="20.0" step="any" style="width: 80%;">
+                                    </div>
+
+                                    <div class="input-wrapper" style="flex: 1; align-items: center;">
+                                        <label for="opt-fmax" style="font-size: small; margin-bottom: 3px;">f_max [GHz]</label>
+                                        <input id="opt-fmax" type="text" class="standard-number-input" value="30.0" step="any" style="width: 80%">
+                                    </div>
+                                </div>
+
+                                <div class="input-wrapper" style="margin-top: 5px;">
+                                    <label for="opt-algorithm" style="font-size: small; margin-bottom: 3px;">Algorithm</label>
+                                    <select id="opt-algorithm" class="standard-number-input" style="width: 100%; height: var(--standard-height);">
+                                        <option value="differential_evolution">Differential Evolution</option>
+                                        <option value="dual_annealing">Simulated Annealing</option>
+                                    </select>
+                                </div>
+
+                                <div id="opt-status-display" style="font-size: 12px; font-weight: bold; margin-top: 5px; color: #333; text-align: center; min-height: 15px;">
+                                    Ready
+                                </div>
+
+                                <button id="opt-start-btn" class="standard-button" style="margin-top: 5px; width: 100%;">
+                                    Run Optimization
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

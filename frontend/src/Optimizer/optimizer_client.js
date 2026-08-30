@@ -1,0 +1,95 @@
+const optWorker = new Worker("src/Optimizer/worker.js");
+const startBtn = document.getElementById("opt-start-btn");
+const statusDisplay = document.getElementById("opt-status-display");
+
+optWorker.onmessage = (event) => {
+    if (event.data.status === "success") {
+        const positions_m = event.data.positions;
+        const metrics = event.data.metrics;
+        const discs = window.discplot.discConfig.discs;
+
+        let max_pos_cm = 0;
+
+        for (let i = 0; i < discs.length; i++) {
+            discs[i].position = positions_m[i] * 100.0;
+
+            let endPos = discs[i].position + discs[i].width;
+            if (endPos > max_pos_cm) {
+                max_pos_cm = endPos;
+            }
+        }
+
+        const target_xmax = Math.max(5, Math.ceil(max_pos_cm * 1.1));
+        window.discplot.updateScale(target_xmax);
+
+        const axisInput = document.getElementById("axis-xmax");
+        if (axisInput) axisInput.value = target_xmax;
+
+        if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
+        if (window.updateEFieldPlot) window.updateEFieldPlot();
+
+        statusDisplay.innerHTML = `
+            <span style="color: green;">Complete ᕙ(  •̀ ᗜ •́  )ᕗ: ${metrics.message}</span><br>
+            <span style="font-weight: normal; font-size: 11px;"> 
+                Iterations: <b>${metrics.nit}</b> | 
+                Evaluations: <b>${metrics.nfev}</b>
+            </span>
+        `;
+    } else {
+        statusDisplay.textContent = "Error: " + event.data.message;
+        statusDisplay.style.color = "red";
+        console.error(event.data.message);
+    }
+
+    startBtn.disabled = false;
+    startBtn.textContent = "Run Optimization";
+};
+
+startBtn.addEventListener("click", () => {
+    const discs = window.discplot?.discConfig?.discs;
+
+    if (!discs || discs.length ===0) {
+        statusDisplay.textContent = "( ͡• _•) where are the discs?"
+        statusDisplay.style.color = "red";
+        return;
+    }
+
+    startBtn.disabled = true;
+    startBtn.textContent = "Optimizing...";
+    statusDisplay.textContent = "Running 三三ᕕ( ᐛ )ᕗ"
+    statusDisplay.style.color = "#333";
+
+    const fminInput = parseFloat(document.getElementById('opt-fmin').value);
+    const fmaxInput = parseFloat(document.getElementById('opt-fmax').value);
+    const freq_min = fminInput * 1e9;
+    const freq_max = fmaxInput * 1e9;
+    const algorithm = document.getElementById("opt-algorithm").value;
+
+    const eps = parseFloat(document.getElementById("eps").value) || 24.0;
+    const tand = (parseFloat(document.getElementById("tand").value) || 0.0) * 1e-6; 
+
+    const distances = [];
+    const thicknesses = [];
+    let currentPosCm = 0.0;
+
+    for (let i = 0; i < discs.length; i++) {
+        let discPos = discs[i].position;
+        let widthCm = discs[i].width;
+
+        let dist_m = Math.max(0, (discPos - currentPosCm) / 100.0);
+        distances.push(dist_m);
+        thicknesses.push(widthCm / 100.0);
+
+        currentPosCm = discPos + widthCm;
+    }
+
+    optWorker.postMessage({
+        freq_min: freq_min,
+        freq_max: freq_max,
+        distances: distances,
+        thicknesses: thicknesses,
+        eps: eps,
+        tand: tand,
+        algorithm: algorithm
+    });
+});
