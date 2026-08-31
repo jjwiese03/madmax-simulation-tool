@@ -7,10 +7,8 @@ include("transfer_matrix.jl")
 const c0 = 299792458.
 
 # Default configuration
-thickness = 1e-3
-distance = [1.00334, 6.94754, 7.1766, 7.22788, 7.19717, 7.23776, 7.07746, 7.57173, 
-            7.08019, 7.24657, 7.21708, 7.18317, 7.13025, 7.2198,  7.45585, 7.39873, 
-            7.15403, 7.14252, 6.83105, 7.42282] * 1e-3
+thickness = 0.2*10^-2
+distance = [2.622, 0.824, 1.252, 0.798] * 10^-2
 
 abstract type Space end
 abstract type Dist <: Space end
@@ -351,7 +349,7 @@ end
 ## Testaufrufe ##
 
 # Test für ebene Welle:
-#= freq_range = 22e9:1e6:22.02e9
+freq_range = 22e9:1e6:22.02e9
 z_vals, E_matrix_plane = calculate_field(PlaneWave, freq_range, distance)
 
 target_idx = 6
@@ -359,7 +357,7 @@ freq2plot = freq_range[target_idx]
 E_target_plane = E_matrix_plane[:, target_idx]
 
 ang = angle(E_target_plane[end])
-E_plane_plot = E_target .* exp(-1im * ang)
+E_plane_plot = E_target_plane .* exp(-1im * ang)
 
 plot_field(z_vals, E_plane_plot, distance; title="Plane Wave @ $(freq2plot / 1e9) GHz")
 
@@ -370,4 +368,4 @@ E_target_axion = E_matrix[:, target_idx]
 
 E_axion_plot = E_target_axion .* exp(-1im * pi / 2 * 0.95)
 
-plot_field(z_vals, E_axion_plot, distance; title="Axion Signal @ $(freq2plot / 1e9) GHz"); =#
+plot_field(z_vals, E_axion_plot, distance; title="Axion Signal @ $(freq2plot / 1e9) GHz");

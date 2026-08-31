@@ -8,23 +8,14 @@ optWorker.onmessage = (event) => {
         const metrics = event.data.metrics;
         const discs = window.discplot.discConfig.discs;
 
-        let max_pos_cm = 0;
-
         for (let i = 0; i < discs.length; i++) {
-            discs[i].position = positions_m[i] * 100.0;
-
-            let endPos = discs[i].position + discs[i].width;
-            if (endPos > max_pos_cm) {
-                max_pos_cm = endPos;
-            }
+            discs[i].position = positions_m[i] * 100.0
         }
 
-        const target_xmax = Math.max(5, Math.ceil(max_pos_cm * 1.1));
-        window.discplot.updateScale(target_xmax);
-
-        const axisInput = document.getElementById("axis-xmax");
-        if (axisInput) axisInput.value = target_xmax;
-
+        if (window.discplot.adjustAxisOnDemand) {
+            window.discplot.adjustAxisOnDemand();
+        }
+        window.discplot.draw(true, true);
         if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
         if (window.updateEFieldPlot) window.updateEFieldPlot();
 

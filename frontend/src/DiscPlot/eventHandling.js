@@ -229,4 +229,33 @@ window.addEventListener("click", (e) => {
     }
 });
 
+window.discplot.adjustAxisOnDemand = function() {
+    if (!window.discplot || !window.discplot.discConfig) return;
+
+    const lastDisc = window.discplot.discConfig.lastDisc;
+    if (!lastDisc) return;
+    
+    const max_pos_cm = lastDisc.rightEdge;
+    const target_xmax = Math.max(10, Math.ceil((max_pos_cm + 2) / 5) * 5);
+    
+    if (window.discplot.axis.xmax !== target_xmax) {
+        window.discplot.updateScale(target_xmax);
+
+        const axisInput = document.getElementById("axis-xmax");
+        if (axisInput) axisInput.value = target_xmax;
+
+        throttledUpdateEField();
+    }
+};
+
+const discCanvas = document.getElementById("discs");
+
+if (discCanvas) {
+    discCanvas.addEventListener("mouseup", window.discplot.adjustAxisOnDemand);
+}
+
+if (position_input) {
+    position_input.addEventListener("change", window.discplot.adjustAxisOnDemand);
+}
+
 export default compilationStatus;

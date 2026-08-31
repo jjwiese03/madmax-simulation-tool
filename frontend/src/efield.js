@@ -191,20 +191,28 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
     let z_vals = [];
     let E_vals = [];
 
-    // we are adding all disc distances and thicknesses together to land on the rightmost edge, schematic:
-    // (mirror) |   | |  |   |(HERE)
+    // we are adding all disc distances and thicknesses together to land on the rightmost edge, then later add a wavelength, schematic:
+    // (mirror) |   | |  |   |   (wavelength) (HERE)
     let base_z = distances.reduce((acc, val) => acc + val, 0) + thicknesses.reduce((acc, val) => acc + val, 0);
 
+    // we will generate extra dpi in the space between last disc and receiver for one wave length
     let lambda = c0 / freq;
     let extraDpi = Math.max(2, Math.round((lambda * 100.0) * pointsPerCm));
 
+    // Then calculate the field at each z point via a for loop
     for (let k = 0; k < extraDpi; k++) {
+        // formula to calculate the next step from right to left
         let z = (base_z + lambda) - k * (lambda / (extraDpi - 1));
         z_vals.push(z);
 
+        //In the end we simply have to multiply The original amplitude vector by the phase difference
+        // generated through one step. Later on a function will connect each point and value via a straight line
         let phase = new Complex((2 * freq * (z - base_z)) / c0, 0);
         let E_prop = V[0].mul(cispiComplex(phase)).add(V[1].mul(cispiComplex(phase.scale(-1))));
 
+        // check for the case: If the axion induces the electric field the source term needs to be subtracted!
+        // This is because we essentiall subtract the S Vector in the original paper to get the field
+        // inside the disc
         if (isAxion) {
             E_vals.push(E_a_vac.sub(E_prop));
         } else {
@@ -212,6 +220,7 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
         }
     }
 
+    //update to the next position, which is the rightmost edge of the rightmost disc (for first run)
     let current_z = base_z;
 
 
@@ -230,13 +239,19 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
         // therefore we now know the left edge of the disc
         let thick = thicknesses[i];
         let z_next = current_z - thick;
+        // we have to scale the localDpi by nd.re, since the optical wavelength is shortened by nd.re
+        // Therefore reducing it by approx 5 fold
         let localDpi = Math.max(2, Math.round((thick * 100.0) * pointsPerCm * nd.re));
 
+        // this loop is essentially doing the same as the upper one
+        // just for the disc
         for (let k = 0; k < localDpi; k++) {
+            // stop reiteration if we reach the end of the disc (left edge)
             if (z_vals.length > 0 && k===0) {
                 continue;
             }
 
+            // essentially the same as above
             let z = current_z - k * ((current_z - z_next) / (localDpi - 1));
             z_vals.push(z);
             let phase = nd.scale((2 * freq * (current_z - z)) / c0);
@@ -250,15 +265,20 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
             }
         }
 
+        // since we now passed through the disc, we can calculate the final phase through the disc and update
+        // our amplitude Vector accordingly
         let phase_disc = nd.scale((2 * freq * thick) / c0);
         V = [V[0].mul(cispiComplex(phase_disc)), V[1].mul(cispiComplex(phase_disc.scale(-1)))];
+        // update position (left edge of rightmost disc in first loop)
         current_z = z_next;
 
+        // now multply with the G matrix to get the new Amplitude vector (see TMM)
         V = multMatVec(G_d2v, V);
         if (isAxion) {
             V = [V[0].sub(S_axion), V[1].sub(S_axion)];
         }
 
+        // repeat the same with distance between two discs
         let d = distances[i];
         z_next = current_z - d;
 
@@ -287,6 +307,8 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
         current_z = z_next;
     }
 
+    // when we're done, flip the arrays for positions and E field strengths and rotate the field by some phase
+    // this does not change its physical meaning, but highlights resonance
     z_vals.reverse();
     E_vals.reverse();
 
@@ -307,26 +329,36 @@ function calculateField(isAxion, freq, distances, eps=24.0, tand=0.0, thicknesse
         }
     }
 
+    // return an object, that can later be used to draw the field
     return { z: z_vals, E_re: E_vals.map(e => e.re), E_im: E_vals.map(e => e.im) };
 }
 
 //Next step is to extract data from the discplot to put it into calculateField and create the canvas
 function getCurrentSetup() {
+    // get the current disc setup displayed
     const arrangement = window.discplot;
+
+    //check if there is no setup or configuration, if so return null
     if (!arrangement || !arrangement.discConfig) {
         return null;
     }
 
+    //in the case that the configuration exists, check if discs can be
+    // reached, and are not 0
     const discs = arrangement.discConfig.discs;
     if (!discs || discs.length === 0) {
         return null;
     }
 
+    // we will do a shallow copy of the discs to sort them, if e.g. disc 9 was shifted before disc 8
+    // its a rare case but better be safe than sorry
     const sortedDiscs = [...discs].sort((a, b) => a.position - b.position);
     const distances = [];
     const thicknesses = [];
 
     let currentPosCm = 0.0;
+
+    //this loop calculates all the disc distances and thicknesses needed for calulateField
     for (let i = 0; i < sortedDiscs.length; i++) {
         let discPos = parseFloat(sortedDiscs[i].position);
         let widthCm;
@@ -347,20 +379,31 @@ function getCurrentSetup() {
     return {distances, thicknesses};
 }
 
+// we will now access the window and define a function that actually renders the efield plot
+// called updateEFieldPlot
 window.updateEFieldPlot = function() {
+
+    // get the created canvas, arrangement and if the efield should be shown or not
     const eCanvas = document.getElementById('efield-canvas');
     const arrangement = window.discplot;
     const eFieldToggle = document.getElementById("efield-toggle-switch");
 
+    // check if they exist
     if (!eCanvas || !arrangement) {
         return undefined;
     }
 
+    //create a 2D Canvas Rendering Context
     const ctx = eCanvas.getContext("2d");
+
+    // should be the same size as the disc canvas
     eCanvas.width = arrangement.discCanvas.width;
     eCanvas.height = arrangement.discCanvas.height;
+
+    // to avoid possible problems we will erase any possible pixels that might be left
     ctx.clearRect(0, 0, eCanvas.width, eCanvas.height);
 
+    //I think you get the idea
     if (eFieldToggle && !eFieldToggle.checked) {
         return undefined;
     }
@@ -370,6 +413,8 @@ window.updateEFieldPlot = function() {
         return undefined;
     }
 
+    // Big part to get all the necessary inputs
+    // for the calculation and visualisation
     const epsInput = document.getElementById("eps");
     const tandInput = document.getElementById("tand");
     const eps = epsInput ? parseFloat(epsInput.value) : 24.0;
@@ -385,12 +430,14 @@ window.updateEFieldPlot = function() {
     const mirrorToggle = document.getElementById("mirror_checkbox");
     const hasMirror = mirrorToggle ? mirrorToggle.checked : false;
 
+    // calculate the field that should be displayed in the current setup
     const fieldData = calculateField(currentIsAxionMode, freqHz, setup.distances, eps, tand, setup.thicknesses, 50, hasMirror);
 
+    
     const bodyH = eCanvas.height - arrangement.padd[0] - arrangement.padd[2];
-    const centerY = arrangement.padd[0] + (bodyH / 2); // Nulllinie exakt in die vertikale Mitte setzen
+    const centerY = arrangement.padd[0] + (bodyH / 2); // set zero line in the middle
     const maxE = Math.max(...fieldData.E_re.map(Math.abs), ...fieldData.E_im.map(Math.abs), 1);
-    const scaleY = (bodyH * 0.7) / maxE; // Skalierung auf 45% (insgesamt 90% der Höhe) erhöhen
+    const scaleY = (bodyH * 0.7) / maxE; // scale height by 70%
 
     function getPixelX(cm) {
         return arrangement.padd[3] + arrangement.cm_to_pixel(cm);
