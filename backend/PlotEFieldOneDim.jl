@@ -7,8 +7,10 @@ include("transfer_matrix.jl")
 const c0 = 299792458.
 
 # Default configuration
-thickness = 0.2*10^-2
-distance = [2.622, 0.824, 1.252, 0.798] * 10^-2
+thickness = 1e-3
+distance = [1.00334, 6.94754, 7.1766, 7.22788, 7.19717, 7.23776, 7.07746, 7.57173, 
+            7.08019, 7.24657, 7.21708, 7.18317, 7.13025, 7.2198,  7.45585, 7.39873, 
+            7.15403, 7.14252, 6.83105, 7.42282] * 1e-3
 
 abstract type Space end
 abstract type Dist <: Space end
