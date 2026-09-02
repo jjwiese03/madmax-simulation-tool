@@ -51,8 +51,8 @@ html, body{
     grid-template-columns: 2fr 3fr 2fr;
     height: 50%;
     width: 100%;
-    padding: 5vh;
-    gap: 50px;
+    padding: 3vh 5vh;
+    gap: 5vh;
     box-sizing: border-box;
 }
 

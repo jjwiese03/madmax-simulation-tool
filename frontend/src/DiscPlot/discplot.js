@@ -60,7 +60,6 @@ function setCanvasSize() {
 }
 setCanvasSize();
 
-
 /**
  * Renders and manages the disc plot: draws the axis, the discs, the marquee
  * selection rectangle and the mirror indicator onto two stacked `<canvas>`
@@ -85,7 +84,7 @@ class Plot{
 
         this.marqueeSelection = new MarqueeSelection();   // speichert die Koordinaten des Marquee Selection Rechtecks (multiselect)
         
-        this.init();
+        this.initParams();
     }
 
     /**
@@ -95,7 +94,7 @@ class Plot{
      *
      * @returns {Promise<void>} Resolves once the initial draw has been performed.
      */
-    async init(){
+    async initParams(){
         this.padd = [discCanvas.height * 0.3, innerHeight * 0.05, discCanvas.height * 0.3, innerHeight * 0.05]
 
         await document.fonts.ready;
@@ -323,5 +322,7 @@ class Plot{
 const discCanvas = document.getElementById("discs");
 const axisCanvas = document.getElementById("axis");
 window.discplot = new Plot(discCanvas, axisCanvas); 
+window.addEventListener("resize", () => {setCanvasSize(); window.discplot.initParams(); window.discplot.draw(true, true);});
+
 
 export default window.discplot;

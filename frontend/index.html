@@ -48,7 +48,7 @@
     <div class="page-content">
         <div class="controls">
             <!--control elements on the left side-->
-            <div style="position: relative; height: 50vh;">
+            <div style="position: relative; height: 50vh; width: 100%;">
                 <canvas id="axis" style="position: absolute;"></canvas>
                 <canvas id="discs" style="position: absolute;"></canvas>
                 <canvas id="efield-canvas" style="position:absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
@@ -161,7 +161,7 @@
                     <h4>Advanced Controls</h4>
                     <div style="display: flex; margin: 10px 15px; gap: 10px;">
                         <button id="run" class="standard-button">Run</button>
-                        <button id="Terminal" class="standard-button">Terminal</button>
+                        <button style="display: none;" id="Terminal" class="standard-button">Terminal</button>
                         <a id="docs" class="standard-button" style="margin-left: auto;" href="https://jjwiese03.github.io/madmax-simulation-tool/docs/DiscPlotAPI/">Docs</a>
                     </div>
                     
@@ -316,12 +316,12 @@
                                 </div>
 
                                 <!-- Slider -->
-                                <div class="input-wrapper" style="width: 100%">
+                                <div class="input-wrapper" style="display: none; width: 100%">
                                     <input id="freq-slider" type="range" min="29.8" max="30" value="29.9" step="any" style="width: 100%; accent-color: var(--madmax-yellow); cursor: pointer;">
                                 </div>
 
                                  <!-- Max Amplitude -->
-                                 <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0, 0, 0, 0, 0.1);">
+                                 <div style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0, 0, 0, 0, 0.1);">
                                     <div id="max-amplitude-display" style="font-size: small; font-weight: bold; margin-bottom: 12px; color: #333;">
                                        Max Amplitude E / E0: Awaiting info...
                                     </div>
@@ -341,7 +341,7 @@
                                  </div>
 
                                  <!-- switch for e field hide/show-->
-                                <div style="display: flex; flex-direction: column; align-items: center; margin-top: 15px;">
+                                <div style="display: flex; flex-direction: column; align-items: center;">
                                     <h5 style="margin: 0 0 8px 0; font-size: small; color: #333;">E-Field</h5>
                                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
                                         <span style="font-size: small; color: #5F5E5A;">Hide</span>

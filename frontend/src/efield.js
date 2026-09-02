@@ -467,8 +467,46 @@ window.updateEFieldPlot = function() {
         ctx.setLineDash([]);
     }
 
+    const drawLegend = () => {
+        const legendX = eCanvas.width - 200;
+        const legendY = 20;
+        const legendWidth = 120;
+        const legendHeight = 60;
+
+        ctx.font = "10px sans-serif";
+        ctx.textBaseline = "top";
+
+        // ctx.textAlign = "middle";
+        ctx.fillText(`max|E/E0|: ${maxE.toFixed(2)}`, legendX + 40, legendY);
+        ctx.textAlign = "left";
+
+
+        ctx.setLineDash([5,5]);
+        ctx.fillStyle = "#2D325966";
+        ctx.strokeStyle = "#2D325966";
+
+        ctx.beginPath();
+        ctx.moveTo(legendX + 10, legendY + 20);
+        ctx.lineTo(legendX + 30, legendY + 20);
+        ctx.stroke();
+        ctx.fillText("Imaginary Part Im(E)", legendX + 40, legendY + 20);
+
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#E3A869";
+        ctx.strokeStyle = "#E3A869";
+
+        ctx.beginPath();
+        ctx.moveTo(legendX + 10, legendY + 40);
+        ctx.lineTo(legendX + 30, legendY + 40);
+        ctx.stroke();
+        ctx.fillText("Real Part Re(E)", legendX + 40, legendY + 40);
+
+        ctx.fillStyle = "#000000";
+    }
+
     drawLine(fieldData.E_im, "#2D325966", true);
     drawLine(fieldData.E_re, "#E3A869");
+    drawLegend();
 
     const maxAmpDisplay = document.getElementById("max-amplitude-display");
     if (maxAmpDisplay) {
