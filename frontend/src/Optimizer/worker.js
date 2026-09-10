@@ -16,7 +16,35 @@ self.onmessage = async (event) => {
         await pyodideReadyPromise;
         
         const run_optimization = self.pyodide.globals.get("run_optimize");
-        const pyResult = run_optimization(freq_min, freq_max, distances, thicknesses, eps, tand, algorithm);
+
+        const progressCallback = (current, max, stuck_current, stuck_max, current_distances, best_distances) => {
+            let current_pos = 0.0;
+            let best_pos = 0.0;
+            const current_positions = new Float64Array(current_distances.length);
+            const best_positions = new Float64Array(best_distances.length);
+
+            for (let i = 0; i < current_distances.length; i++) {
+                current_pos += current_distances[i];
+                current_positions[i] = current_pos;
+                current_pos += thicknesses[i];
+
+                best_pos += best_distances[i];
+                best_positions[i] = best_pos;
+                best_pos += thicknesses[i];
+            }
+
+            self.postMessage({
+                status: "progress",
+                current: current,
+                max: max,
+                stuck_current: stuck_current,
+                stuck_max: stuck_max,
+                current_positions: current_positions,
+                best_positions: best_positions
+            });
+        };
+            
+        const pyResult = run_optimization(freq_min, freq_max, distances, thicknesses, eps, tand, algorithm, progressCallback);
 
         const result = pyResult.toJs({dict_converter: Object.fromEntries });
         pyResult.destroy();
@@ -36,6 +64,7 @@ self.onmessage = async (event) => {
             status: "success",
             positions: optimized_positions,
             metrics: {
+                avg_boost: result.avg_boost,
                 nit: result.nit,
                 nfev: result.nfev,
                 message: result.message

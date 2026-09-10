@@ -1,42 +1,111 @@
-const optWorker = new Worker("src/Optimizer/worker.js");
+let optWorker;
+let isOptimizing = false;
+let latestPositions = null;
 const startBtn = document.getElementById("opt-start-btn");
 const statusDisplay = document.getElementById("opt-status-display");
 
-optWorker.onmessage = (event) => {
-    if (event.data.status === "success") {
-        const positions_m = event.data.positions;
-        const metrics = event.data.metrics;
-        const discs = window.discplot.discConfig.discs;
+function initWorker() {
+    optWorker = new Worker("src/Optimizer/worker.js");
+    
+    optWorker.onmessage = (event) => {
+        if (event.data.status === "progress") {
+            latestPositions = event.data.best_positions;
 
-        for (let i = 0; i < discs.length; i++) {
-            discs[i].position = positions_m[i] * 100.0
+            const discs = window.discplot.discConfig.discs;
+            for (let i = 0; i < discs.length; i++) {
+                discs[i].position = event.data.current_positions[i] * 100.0;
+            }
+
+            requestAnimationFrame(() => {
+                if (window.discplot.adjustAxisOnDemand) window.discplot.adjustAxisOnDemand();
+                window.discplot.draw(true, true);
+                if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
+                if (window.updateEFieldPlot) window.updateEFieldPlot();
+            });
+            
+            const percent = Math.round((event.data.current / event.data.max) * 100);
+            let stuckHtml = "";
+            
+            if (event.data.stuck_max > 0) {
+                const stuckPercent = Math.round((event.data.stuck_current / event.data.stuck_max) * 100);
+                stuckHtml = ` | Stuck: <b>${stuckPercent}%</b> (${event.data.stuck_current}/${event.data.stuck_max})`;
+            }
+
+            statusDisplay.innerHTML = `
+                <span style="color: #333;">Running 三三ᕕ( ᐛ )ᕗ</span><br>
+                <span style="font-weight: normal; font-size: 11px;">
+                    Progress: <b>${percent}%</b> (${event.data.current}/${event.data.max})${stuckHtml}
+                </span>`;
+            return;
         }
 
-        if (window.discplot.adjustAxisOnDemand) {
-            window.discplot.adjustAxisOnDemand();
+        if (event.data.status === "success") {
+            isOptimizing = false;
+            startBtn.textContent = "Run Optimization";
+            
+            const positions_m = event.data.positions;
+            const metrics = event.data.metrics;
+            const discs = window.discplot.discConfig.discs;
+
+            for (let i = 0; i < discs.length; i++) {
+                discs[i].position = positions_m[i] * 100.0;
+            }
+
+            if (window.discplot.adjustAxisOnDemand) window.discplot.adjustAxisOnDemand();
+            window.discplot.draw(true, true);
+            if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
+            if (window.updateEFieldPlot) window.updateEFieldPlot();
+
+            statusDisplay.innerHTML = `
+                <span style="color: green;">Complete ᕙ(  •̀ ᗜ •́  )ᕗ: ${metrics.message}</span><br>
+                <span style="font-weight: normal; font-size: 11px;"> 
+                    Avg Boost: <b>${metrics.avg_boost.toFixed(2)}</b> |
+                    Iterations: <b>${metrics.nit}</b> | 
+                    Evaluations: <b>${metrics.nfev}</b>
+                </span>
+            `;
+        } else if (event.data.status === "error") {
+            isOptimizing = false;
+            startBtn.textContent = "Run Optimization";
+            statusDisplay.textContent = "Error: " + event.data.message;
+            statusDisplay.style.color = "red";
+            console.error(event.data.message);
         }
-        window.discplot.draw(true, true);
-        if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
-        if (window.updateEFieldPlot) window.updateEFieldPlot();
+    };
+}
 
-        statusDisplay.innerHTML = `
-            <span style="color: green;">Complete ᕙ(  •̀ ᗜ •́  )ᕗ: ${metrics.message}</span><br>
-            <span style="font-weight: normal; font-size: 11px;"> 
-                Iterations: <b>${metrics.nit}</b> | 
-                Evaluations: <b>${metrics.nfev}</b>
-            </span>
-        `;
-    } else {
-        statusDisplay.textContent = "Error: " + event.data.message;
-        statusDisplay.style.color = "red";
-        console.error(event.data.message);
-    }
-
-    startBtn.disabled = false;
-    startBtn.textContent = "Run Optimization";
-};
+initWorker();
 
 startBtn.addEventListener("click", () => {
+    if (isOptimizing) {
+        optWorker.terminate();
+        isOptimizing = false;
+        startBtn.textContent = "Run Optimization";
+        statusDisplay.innerHTML = `
+           <span style="color: rgba(255, 210, 64, 0.8);">Interrupted ( ꩜ ᯅ ꩜;)⁭</span><br>
+           <span style="font-weight: normal; font-size: 11px;">
+                Showing best intermediate result.
+           </span>
+        `;
+
+        if (latestPositions) {
+            const discs = window.discplot?.discConfig?.discs;
+            if (discs) {
+                for (let i = 0; i < discs.length; i++) {
+                    discs[i].position = latestPositions[i] * 100.0;
+                }
+                if (window.discplot.adjustAxisOnDemand) window.discplot.adjustAxisOnDemand();
+                window.discplot.draw(true, true);
+                if (window.updateBoostplot) window.updateBoostplot(window.discplot.discConfig);
+                if (window.updateEFieldPlot) window.updateEFieldPlot();
+            }
+        }
+
+        initWorker();
+        return;
+    }
+
+
     const discs = window.discplot?.discConfig?.discs;
 
     if (!discs || discs.length ===0) {
@@ -45,10 +114,13 @@ startBtn.addEventListener("click", () => {
         return;
     }
 
-    startBtn.disabled = true;
-    startBtn.textContent = "Optimizing...";
-    statusDisplay.textContent = "Running 三三ᕕ( ᐛ )ᕗ"
-    statusDisplay.style.color = "#333";
+    isOptimizing = true;
+    latestPositions = null;
+    startBtn.textContent = "Stop Optimization";
+
+    statusDisplay.innerHTML = `
+        <span style="color: #333;">Running 三三ᕕ( ᐛ )ᕗ</span><br>
+        <span style="font-weight: normal; font-size: 11px;">Starting up...</span>`;
 
     const fminInput = parseFloat(document.getElementById('opt-fmin').value);
     const fmaxInput = parseFloat(document.getElementById('opt-fmax').value);
