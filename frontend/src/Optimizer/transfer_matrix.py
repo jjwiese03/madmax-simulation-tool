@@ -3,9 +3,9 @@ from scipy.optimize import differential_evolution, dual_annealing
 
 c0 = 299792458.0
 
-def transfer_matrix(freqs, positions, thicknesses, eps=24.0, tand=0.0, nm=1e15):
+def transfer_matrix(freqs, distances, thicknesses, eps=24.0, tand=0.0, nm=1e15):
 
-    N = len(positions)
+    N = len(distances)
     l = len(freqs)
 
     eps_complex = eps - 1j * (eps * tand)
@@ -50,8 +50,7 @@ def transfer_matrix(freqs, positions, thicknesses, eps=24.0, tand=0.0, nm=1e15):
         M = M - np.einsum("ijk, jl->ilk", T, S)
         T = np.einsum("ijk,jl->ilk", T, Gv)
 
-        prev_pos = 0.0 if i == 0 else positions[i-1] + thicknesses[i-1]
-        d = positions[i] - prev_pos
+        d = distances[i]
 
         ph_v = -2 * np.pi * freqs * d / c0
         pp = np.exp(1j * ph_v)
@@ -77,15 +76,9 @@ def transfer_matrix(freqs, positions, thicknesses, eps=24.0, tand=0.0, nm=1e15):
     return np.abs(B)**2
 
 def objective_function(distances, freqs, thicknesses, eps=24.0, tand=0.0):
-    positions = np.zeros_like(distances)
-    current_pos = 0.0
-    for i in range(len(distances)):
-        current_pos += distances[i]
-        positions[i] = current_pos
-        current_pos += thicknesses[i]
 
-    boost = transfer_matrix(freqs, positions, thicknesses, eps, tand)
-    return -np.trapz(boost, freqs)
+    boost = transfer_matrix(freqs, distances, thicknesses, eps, tand)
+    return -np.min(boost)
 
 def Dominiks_annealing_shortened(obj_func, x0, bounds, args, maxiter=100001, rmax=100e-6, T0=100.0, nreset=500, nresetterm=10, progress_callback=None):
     x = np.copy(x0)
@@ -192,15 +185,9 @@ def run_optimize(freq_min, freq_max, initial_distances, thicknesses, eps=24.0, t
         msg = "Successful optimization (thx Dominik)"
 
     freqs_eval = np.linspace(freq_min, freq_max, 100)
-    positions_final = np.zeros_like(final_distances)
-    current_pos = 0.0
-    for i in range(len(final_distances)):
-        current_pos += final_distances[i]
-        positions_final[i] = current_pos
-        current_pos += thicknesses[i]
 
-    final_boost = transfer_matrix(freqs_eval, positions_final, thicknesses, eps, tand)
-    integral = np.trapz(final_boost, freqs_eval)
+    final_boost = transfer_matrix(freqs_eval, final_distances, thicknesses, eps, tand)
+    integral = np.trapezoid(final_boost, freqs_eval)
     avg_boost = integral / (freq_max - freq_min) if (freq_max > freq_min) else 0.0
 
     return {
