@@ -556,6 +556,27 @@ export class DiscCollection {
         }
         this.addDisc(null, true);
     }
+    /**
+     * doc: TODO
+     * 
+     * @param {Array} pos 
+     * @param {Array} width 
+     * @param {Array|Number} eps 
+     * @param {Bool} relativePositions 
+     */
+    addMultipleDiscs(pos, width, eps = 24, relativePositions = false, clearDiscs = true){
+        if (clearDiscs) {this.clear()};
+        
+        if (relativePositions) {
+            for(let i = 1; i<pos.length; i++) pos[i] += pos[i-1];
+        }
+
+        pos.forEach((element, i) => {
+            var disc = { position: element, width: width[i], epsilon: Array.isArray(eps) ? eps[i] : eps, selected: false }
+            this.addDisc(disc)
+        })
+        
+    }
 
     /**
      * Selects one or more discs.
@@ -715,5 +736,83 @@ export class DiscCollection {
         for (let i = start; i <= stop; i++) {
             this.discs[i].index = i;
         }
+    }
+
+    /**
+     * Exportiert die Scheiben als Array von einfachen Objekten.
+     *
+     * @param {boolean} includeState - Ob selected mit exportiert werden soll.
+     * @returns {Object[]}
+     */
+    toData(includeState = false) {
+        return this.discs.map(disc => {
+            const data = {
+                position: disc.position,
+                width: disc.width,
+                epsilon: disc.epsilon
+            };
+
+            if (includeState) {
+                data.selected = disc.selected;
+            }
+
+            return data;
+        });
+    }
+
+
+    /**
+     * Exportiert die Scheiben als JSON-String.
+     *
+     * @param {boolean} pretty - JSON formatiert oder kompakt.
+     * @param {boolean} includeState - Ob selected mit exportiert werden soll.
+     * @returns {string}
+     */
+    toJSON(pretty = true, includeState = false) {
+        return JSON.stringify(
+            this.toData(includeState),
+            null,
+            pretty ? 2 : 0
+        );
+    }
+
+
+    /**
+     * Exportiert die Scheiben als CSV-String.
+     *
+     * @param {boolean} includeState - Ob selected mit exportiert werden soll.
+     * @returns {string}
+     */
+    toCSV(includeState = false) {
+
+        const headers = [
+            "position",
+            "width",
+            "epsilon"
+        ];
+
+        if (includeState) {
+            headers.push("selected");
+        }
+
+        const rows = this.discs.map(disc => {
+
+            const row = [
+                disc.position,
+                disc.width,
+                disc.epsilon
+            ];
+
+            if (includeState) {
+                row.push(disc.selected);
+            }
+
+            return row;
+        });
+
+        return [
+            headers.join(","),
+            ...rows.map(row => row.join(","))
+        ].join("\n");
     }
 }

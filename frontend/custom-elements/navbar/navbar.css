@@ -20,7 +20,7 @@
     display: inline-block;
     line-height: 0;
     font-size: small;
-    z-index: 10;
+    z-index: 2;
     position: relative;
     padding: 5px 10px;
     color: var(--color-dark-gray);

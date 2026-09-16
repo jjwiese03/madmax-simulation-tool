@@ -49,7 +49,7 @@ html, body{
 .card-grid{
     display: grid;
     grid-template-columns: 2fr 3fr 2fr;
-    height: 50%;
+    height: 50vh;
     width: 100%;
     padding: 3vh 5vh;
     gap: 5vh;
@@ -115,6 +115,22 @@ html, body{
 }
 
 .standard-number-input:focus-visible{
+    border: none;
+    outline: none;
+}
+
+.text-input{
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+    padding: 5px;
+    text-align: left;
+    font-family: inherit;
+    font-size: smaller;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.132);
+}
+
+.text-input:focus-visible{
     border: none;
     outline: none;
 }
@@ -221,14 +237,6 @@ a.standard-button{
 
 /* right side */
 
-.plots {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
-    justify-content: space-evenly;
-    transition: background-color 0.3s ease;
-}
-
 .plots.noise-mode {
     background-color: rgb(96, 125, 139, 0.20) !important;
 }
@@ -251,15 +259,17 @@ a.standard-button{
 }
 .plots{
     display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
     box-sizing: border-box;
     position: relative; 
-    z-index: 10; 
+    z-index: 2; 
     width: 30%; 
-    height: 100%; 
+    height: 100vh; 
     padding: 20px; 
     background-color: var(--color-light-gray);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.132); 
+    transition: background-color 0.3s ease;
 }
 
 .standard-button-v2{
@@ -292,10 +302,17 @@ a.standard-button{
 .modal-content {
     background-color: #fff;
     border-radius: 8px;
-    width: 80%;
+    width: fit-content;
     max-width: 1000px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.modal-content-addition {
+    z-index: 9999;
+    position: fixed; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%);
 }
 
 .modal-header {
@@ -313,3 +330,9 @@ a.standard-button{
 }
 
 .close-button:hover {color: #000}
+
+.border-1 { 
+    border: gray solid 1px;
+    border-radius: 10px; 
+    padding: 10px; 
+}
