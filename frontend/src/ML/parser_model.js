@@ -6,7 +6,7 @@ ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0/di
 ort.env.wasm.numThreads = 1; // vermeidet Cross-Origin-Isolation-Probleme
 
 const DECIMAL_SYMBOL = '.';
-const CLASS_LABELS = ['none', 'position', 'distance', 'width']; // Index 0 = kein Treffer, passt sie ggf. an deine Reihenfolge an
+const CLASS_LABELS = ['none', 'position', 'distance', 'width', 'epsilon']; // Index 0 = kein Treffer, passt sie ggf. an deine Reihenfolge an
 
 // ----------------------------------------------------
 // Preprocessing — Äquivalent zu Parser.prepare_input() in Python
@@ -41,12 +41,13 @@ async function prepareInput(tokenizer, text) {
 
     return { tokenIds, numberMask, values };
 }
+
+// start model
+const tokenizer = await AutoTokenizer.from_pretrained('Xenova/multilingual-e5-base');
+const session = await ort.InferenceSession.create('/frontend/src/ML/parser.onnx');
+
  
 export default async function evaluateText(text) {
-    const tokenizer = await AutoTokenizer.from_pretrained('Xenova/multilingual-e5-base');
-    const session = await ort.InferenceSession.create('/frontend/src/ML/parser.onnx');
-
-
     const { tokenIds, numberMask, values } = await prepareInput(tokenizer, text);
     const seqLen = tokenIds.length;
 
@@ -76,4 +77,3 @@ export default async function evaluateText(text) {
 
     return result;
 }
-

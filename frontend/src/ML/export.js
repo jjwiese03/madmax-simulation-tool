@@ -16,7 +16,6 @@ const download_btn = document.getElementById("download")
 const copy_btn = document.getElementById("copy")
 const sel_format = document.getElementById("sel_format")
 
-console.log(sel_format.value)
 
 copy_btn.addEventListener("click", async () => {
     const config = window.discplot.discConfig

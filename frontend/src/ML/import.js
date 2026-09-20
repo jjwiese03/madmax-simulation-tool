@@ -36,7 +36,7 @@ submit.addEventListener("click", async () => {
 
     var examinationText = ""
     for (const [key, value] of Object.entries(data)) {
-        (value.length != 0) && (examinationText += `${key}: ${value} \n`);
+        (value.length != 0) && (examinationText += `${key}: ${value.join(", ")} \n`);
     }
 
     document.getElementById("examine-data").innerText = examinationText

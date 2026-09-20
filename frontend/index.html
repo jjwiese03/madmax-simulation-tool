@@ -241,7 +241,7 @@
                     </div>
                     <div class="tab-window" id="SimpleTabs">
                         <!-- tab: Download -->
-                        <div class="tab tab-size-1" id="tab-Download">
+                        <div class="tab" style="width: 80%;" id="tab-Download">
                             
                             <div class="border-1" style="position: relative; width: 100%; height: 100%;margin-top: 10px ; box-sizing: border-box; display: flex; flex-direction: column;">
                                 <label style="position: absolute; top: -0.8em; padding: 0 5px; font-size: small; color: gray; background-color: #f8f8f8;">Import</label>
@@ -262,13 +262,13 @@
                             <div class="border-1" style="position: relative; display: flex; align-items: center; width: 100%; margin-top: 18px; box-sizing: border-box;">
                                 <script type="module" src="src/ML/export.js"></script>
                                 <label style="position: absolute; top: -0.8em; padding: 0 5px; font-size: small; color: gray; background-color: #f8f8f8;">Export</label>
-                                <select name="format" id="sel_format" style="height: min-content;">
+                                <select name="format" id="sel_format" style="height: min-content">
                                     <option value="CSV">CSV</option>
                                     <option value="JSON" selected>JSON</option>
                                 </select>
 
                                 <div style="width: min-content; margin-left: auto;">
-                                    <input type="button" style="width: 100%;" id="download" value="download">
+                                    <input type="button" style="width: 100%; margin-bottom: 3px;" id="download" value="download">
                                     <input type="button" style="width: 100%;" id="copy" value="to clipboard">
                                 </div>
                             </div>
@@ -281,7 +281,7 @@
                                     <button id="close-modal" class="close-button" onclick="document.getElementById('file-upload-modal').style.display='none'">&times;</button>
                                 </div>
                                 
-                                <div id="examine-data" style="display: flex; justify-content: center; margin: 40px 0;"></div>
+                                <span id="examine-data" style="display: flex; justify-content: center; margin: 40px 0; width: 80%;"></span>
 
                                 <link rel="stylesheet" href="/frontend/custom-elements/loading-animation/la.css">
 
