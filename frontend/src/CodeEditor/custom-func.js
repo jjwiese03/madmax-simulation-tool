@@ -60,10 +60,11 @@ import asyncio
 
 async def Animation(disc):
     # animate the disc while moving 2cm to the right
-    for i in range(200):
+    for i in range(100):
         disc.move(0.01, dx=True)
         await asyncio.sleep(0.1)
     # delete disc
+    await asyncio.sleep(2)
     disc.delete()
     return None
 
