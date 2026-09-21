@@ -7,6 +7,64 @@
 
     <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
 
+
+    <script type="module">
+        import confetti from "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.module.mjs";
+
+        // hidden credits
+        const pressed_keys = new Set();
+
+        const div = document.createElement("div")
+
+        const modal = document.createElement("div");
+
+        modal.innerHTML = `
+            <div class="modal-content-addition"
+                style="display: flex; flex-direction: column; background-color: white;
+                        width: 100vw; height: 100vh; align-items: center; justify-content: center;">
+                
+                <h1>Easter Egg</h1>
+
+                <img src="https://www.institut3a.physik.rwth-aachen.de/global/show_picture.asp?id=aaaaaaaadindnlt&w=1200&q=75"
+                    height="40%">
+
+                <span style="font-size: x-small;">thx Dominik</span>
+
+                <span style="margin-top: 10%;">
+                    credits Sim Tool:
+                    Jan Wiesmann (gh: <a href="https://github.com/jjwiese03">jjwiese03</a>),
+                    Kenan Ak (gh: <a href="https://github.com/Keknan">keknan</a>)
+                </span>
+            </div>
+        `;
+
+
+        document.addEventListener("keydown", (event) => {
+            if (pressed_keys.has(event.key)) return ;
+            else pressed_keys.add(event.key);
+            
+            if (pressed_keys.has("j") && pressed_keys.has("k")) {
+
+                // add the newly created element and its content into the DOM
+                document.body.appendChild(modal);
+
+                confetti({
+                    particleCount: 200,
+                    spread: 100,
+                    zIndex: 10000
+                });
+
+            }
+        })
+
+        document.addEventListener("keyup", (event) => {
+            if (document.body.contains(modal) && (event.key == "j" || event.key == "k")) document.body.removeChild(modal);
+
+            pressed_keys.delete(event.key);
+        });
+    </script>
+
+
     <script>
         // create a Flag to check if WebChannels are enabled in the browser
         Object.defineProperty(window, 'WEBCHANNELS_ENABLED', {
