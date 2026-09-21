@@ -44,7 +44,7 @@ async function prepareInput(tokenizer, text) {
 
 // start model
 const tokenizer = await AutoTokenizer.from_pretrained('Xenova/multilingual-e5-base');
-const session = await ort.InferenceSession.create('/frontend/src/ML/parser.onnx');
+const session = await ort.InferenceSession.create('../frontend/src/ML/parser.onnx');
 
  
 export default async function evaluateText(text) {
