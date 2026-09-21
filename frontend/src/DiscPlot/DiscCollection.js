@@ -68,6 +68,10 @@ export class Disc {
         return this.position + this.width
     }
 
+    get properties() {
+        return 
+    }
+
     /**
      * Returns the disc that is `n` positions before this one.
      *
@@ -710,7 +714,11 @@ export class DiscCollection {
     changeDiscProperty(discs, properties, triggerEvent = true){
         if(Array.isArray(discs)) {discs.forEach((disc) => this.changeDiscProperty(disc, properties, triggerEvent))}
         else{
+                console.log("key: ", Object.entries(properties))
+
             for (const [key, value] of Object.entries(properties)) {
+                console.log("key: ", key in discs)
+
                 if(!(key in discs)) continue;
                 
                 discs[key] = value;

@@ -2,10 +2,8 @@ import evaluateText from "./parser_model.js"
 
 const modal = document.getElementById('file-upload-modal')
 
-const file_input = document.getElementById("file-input");
 const apply = document.getElementById("apply");
 const submit = document.getElementById("submit");
-const discard = document.getElementById("discard");
 
 
 const addDiscsParser = (TextEvaluation) => {

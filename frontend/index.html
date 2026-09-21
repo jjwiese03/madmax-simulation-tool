@@ -160,44 +160,28 @@
                  <div class="card" style="padding: 0;">
                     <h4>Advanced Controls</h4>
                     <div style="display: flex; margin: 10px 15px; gap: 10px;">
-                        <button id="run" class="standard-button">Run</button>
-                        <button style="display: none;" id="Terminal" class="standard-button">Terminal</button>
-                        <a id="docs" class="standard-button" style="margin-left: auto;" href="https://jjwiese03.github.io/madmax-simulation-tool/docs/DiscPlotAPI/">Docs</a>
+                        <button type="button" id="run" class="standard-button">Run</button>
+                        <a id="docs" class="standard-button" href="https://jjwiese03.github.io/madmax-simulation-tool/docs/DiscPlotAPI/">Docs</a>
+
+                        <select id="example-code" class="standard-number-input" style="margin-left: auto; width: min-content; background-color: var(--line-color-1); height: var(--standard-height);">
+                            <option value="basics">Basics</option>
+                            <option value="animation">Animation</option>
+                        </select>
+                        <button type="button" id="load-code" class="standard-button" onclick="const example = document.getElementById('example-code').value; window.editor.setValue(window.CODE_EXAMPLES[example])">Load Code</button>
                     </div>
                     
                     <div id="editor" style="flex: 1; margin: 0 10px 10px 10px;"></div>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
-                    <script>
+                    <script type="module">
                         require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' } });
 
+                        const savedCode = localStorage.getItem("pythonCode") ?? "";
 
-                        const example = [
-                                        "# -- CODE EXAMPLE -- ",
-                                        "import js",
-                                        "import asyncio",
-                                        "",
-                                        "async def Animation(disc):",
-                                        "    # animate the disc while moving 2cm to the right",
-                                        "    for i in range(200):",
-                                        "        disc.move(0.01, dx=True)",
-                                        "        await asyncio.sleep(0.1)",
-                                        "    return None",
-                                        "",
-                                        "# add a disc to the discplot",
-                                        "disc = js.window.discplot.discConfig.addDisc()",
-                                        "print(disc.position)",
-                                        "",
-                                        "# wait for 3 seconds",
-                                        "await asyncio.sleep(3)",
-                                        "",
-                                        "await Animation(disc)"
-                                    ].join("\n")
-
-                        require(["vs/editor/editor.main"], function () {
+                        await require(["vs/editor/editor.main"], function () {
                             window.editor = monaco.editor.create(
                                 document.getElementById("editor"),
                                 {
-                                    value: example,
+                                    value: savedCode,
                                     language: 'python',
                                     theme: 'vs',
                                     minimap: { enabled: false },      // keine Minimap rechts
@@ -212,10 +196,20 @@
                                     overviewRulerLanes: 0
                                 }
                             );
+
+                            window.editor.onDidChangeModelContent(() => {
+                                localStorage.setItem(
+                                    "pythonCode",
+                                    window.editor.getValue()
+                                );
+                            });
+
                             define.amd = false;
                         });
+
                     </script>
                     <script type="module" src="src/CodeEditor/pyodide-main.js"></script>
+                    <script src="src/CodeEditor/custom-func.js"></script>
                  </div>
 
                 <!-- card 3 -->
