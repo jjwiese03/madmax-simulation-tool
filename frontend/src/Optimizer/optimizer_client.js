@@ -118,6 +118,8 @@ startBtn.addEventListener("click", () => {
     latestPositions = null;
     startBtn.textContent = "Stop Optimization";
 
+    statusDisplay.style.color = "";
+    
     statusDisplay.innerHTML = `
         <span style="color: #333;">Running 三三ᕕ( ᐛ )ᕗ</span><br>
         <span style="font-weight: normal; font-size: 11px;">Starting up...</span>`;

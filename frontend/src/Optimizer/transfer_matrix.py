@@ -172,7 +172,7 @@ def run_optimize(freq_min, freq_max, initial_distances, thicknesses, eps=24.0, t
     else:
         final_distances, _, nit, nfev = Dominiks_annealing_shortened(
             objective_function,
-            np.array(initial_distances),
+            np.array(initial_distances, dtype=float),
             bounds,
             args=(freqs, thicknesses, eps, tand),
             maxiter=100001,
