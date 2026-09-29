@@ -517,7 +517,7 @@ export class DiscCollection {
         if (disc == null) disc = {};
 
         if (typeof disc === 'object' && !(disc instanceof Disc)) {
-            const defaultDisc = { position: null, width: 0.2, epsilon: 24, selected: false };
+            const defaultDisc = { position: null, width: 0.1, epsilon: 24, selected: false };
             Object.entries(defaultDisc).forEach(([key, value]) => {
                 if (disc[key] == null) disc[key] = value;
             });
